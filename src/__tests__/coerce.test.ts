@@ -1,5 +1,4 @@
-import { zfl } from "../core";
-import { printNode } from "../utils";
+import { zfl, printNode } from "..";
 
 const coerceStringExp = zfl().coerce().string().create();
 const coerceNumberExp = zfl().coerce().number().create();

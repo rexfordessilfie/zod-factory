@@ -1,5 +1,5 @@
-import { zfl } from "../core";
-import { printNode } from "../utils";
+import { zfl } from "..";
+import { printNode } from "..";
 
 const minTwoExp = zfl().string().array().min(2).create();
 const maxTwoExp = zfl().string().array().max(2).create();

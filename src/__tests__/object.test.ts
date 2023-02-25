@@ -1,5 +1,4 @@
-import { zfl } from "../core";
-import { printNode } from "../utils";
+import { zfl, printNode } from "..";
 
 const baseExp = zfl().object({}).create();
 const optionalObjectExp = zfl().object({}).optional().create();
