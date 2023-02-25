@@ -115,8 +115,10 @@ cd playground
 ts-node codegen-custom-format.ts <file:variableNameRegex>
 ```
 
-<!-- # Acknowledgements
-This library was birthed from an Independent Study research project I am undertaking with my advisor, professor Garret Morris in the Computer Science department at the University of Iowa -->
+
+# Acknowledgements
+This library is being put together as part of an Independent Study project I am undertaking with my advisor, professor Garret Morris in the Computer Science department at the University of Iowa.
+
 
 
 

@@ -18,7 +18,7 @@ type AllLazyMembers = LazyDirectMemberNames | LazyTypeMembersFlat;
 
 type LazyParams<T extends AllLazyMembers> = [T, ...any[]][];
 
-export function lazyCreate<T extends AllLazyMembers>(params: LazyParams<T>) {
+export function zfs<T extends AllLazyMembers>(params: LazyParams<T>) {
   const [first, ...rest] = params || [];
   const [_initialMember, ...initialMemberArgs] = first || [];
 
@@ -59,14 +59,14 @@ function createLazyMember<T extends AllLazyMembers>(token: T, soFar: any[]) {
           [curr]: createLazyMember(curr, soFar),
         };
       },
-      { create: () => lazyCreate(soFar) } as LazyResult
+      { create: () => zfs(soFar) } as LazyResult
     );
   };
 }
 
 // TODO: we can make the types stronger here
 type LazyResult<T extends string = string> = {
-  create: () => ReturnType<typeof lazyCreate>;
+  create: () => ReturnType<typeof zfs>;
 } & Record<AllLazyMembers, (...args: any[]) => LazyResult>;
 
 export function zfl() {

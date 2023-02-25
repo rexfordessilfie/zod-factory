@@ -1,5 +1,4 @@
-import { zf } from "../core";
-import { printNode } from "../utils";
+import { zf, printNode } from "..";
 
 const baseExp = zf.string({ required_message: "required" });
 const minFiveExp = zf.stringMethods.min(zf.string(), 5, "min5");

@@ -1,14 +1,14 @@
-import { lazyCreate } from "../src/core";
+import { zfs } from "../src/core";
 import { zodTokens } from "../src/utils";
 
-export const expression = lazyCreate([
+export const expression = zfs([
   [
     zodTokens.object,
     {
-      name: lazyCreate([[zodTokens.string], [zodTokens.max, 20]]),
-      age: lazyCreate([[zodTokens.number], [zodTokens.min, 18]]),
+      name: zfs([[zodTokens.string], [zodTokens.max, 20]]),
+      age: zfs([[zodTokens.number], [zodTokens.min, 18]]),
     },
   ],
 ]);
 
-export const expression2 = lazyCreate([[zodTokens.coerce], [zodTokens.string]]);
+export const expression2 = zfs([[zodTokens.coerce], [zodTokens.string]]);
