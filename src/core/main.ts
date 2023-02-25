@@ -46,6 +46,7 @@ export const zodDirectTypeMemberCreators = {
   promise: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.promise),
   object: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.object),
   optional: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.optional),
+  array: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.array),
   coerce: propertyAccessExpressionCreatorWithTarget(
     zodIdentifier,
     zodTokens.coerce
@@ -53,14 +54,31 @@ export const zodDirectTypeMemberCreators = {
 } as const satisfies Partial<Record<keyof typeof zodDirectTypeMembers, any>>;
 
 export const zodStringMemberCreators = {
-  min: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.string),
-  max: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.string),
+  min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.string),
+  max: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.string),
+  uuid: callExpressionCreatorWithFactoryType(zodTokens.uuid, zodTokens.string),
+  email: callExpressionCreatorWithFactoryType(
+    zodTokens.email,
+    zodTokens.string
+  ),
+  nonempty: callExpressionCreatorWithFactoryType(
+    zodTokens.nonempty,
+    zodTokens.string
+  ),
+  startsWith: callExpressionCreatorWithFactoryType(
+    zodTokens.startsWith,
+    zodTokens.string
+  ),
+  endsWith: callExpressionCreatorWithFactoryType(
+    zodTokens.endsWith,
+    zodTokens.string
+  ),
   ...createCommonZodTypeMemberCreators(zodTokens.string),
 } as const satisfies Partial<Record<keyof typeof zodStringMembers, any>>;
 
 export const zodNumberMemberCreators = {
-  min: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.number),
-  max: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.number),
+  min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.number),
+  max: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.number),
   ...createCommonZodTypeMemberCreators(zodTokens.number),
 } as const satisfies Partial<Record<keyof typeof zodNumberMembers, any>>;
 
@@ -73,8 +91,8 @@ export const zodCoerceMemberCreators = {
 } as const satisfies Partial<Record<keyof typeof zodCoerceMembers, any>>;
 
 export const zodArrayMemberCreators = {
-  min: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.array),
-  max: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.array),
+  min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.array),
+  max: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.array),
   length: callExpressionCreatorWithFactoryType(
     zodTokens.length,
     zodTokens.array
