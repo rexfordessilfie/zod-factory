@@ -1,69 +1,89 @@
 # zod-factory
-Typescript compiler API factory abstractions for creating zod validation schemas.
+Zod Factory introduces Typescript compiler API factory abstractions for creating zod validation schemas.
+
+### ⚠️ In Progress ⚠️
+This library is still in very early stages and is not fully featured yet with the `zod` itself. I hope to continue adding more features and abstractions to the library to make it on par with `zod` and some more utilities.
 
 # Motivation
-Working directly with the Typescript compiler API for code generation can be a difficult task. For example, a zod schema such as the following, would yield about 18 lines worth of code of TS compiler API calls to generate a corresponding Typescript AST node.
+The Typescript Compiler API is very powerful, and heavily featured to handle a variety of use cases, but it can also be overwhelming to work with directly. 
 
+For example, consider the zod schema below, and the corresponding Typescript compiler factory API code to generate the AST representation of this schema.
+
+**zod Schema**
 ```typescript
-z.object({
+const person = z.object({
   name: z.string(),
   age: z.number(),
 });
 ```
 
-The corresponding Typescript compiler API expression for this is:  
-
-<details open>
-<summary>TS Compiler API factory Definition</summary>
+**Typescript Compiler factory API definition**
+<details>
+<summary>Expand for TS Compiler API factory Definition</summary>
   
   ```typescript
-factory.createExpressionStatement(factory.createCallExpression(
-  factory.createPropertyAccessExpression(
-    factory.createIdentifier("z"),
-    factory.createIdentifier("object")
-  ),
-  undefined,
-  [factory.createObjectLiteralExpression(
-    [
-      factory.createPropertyAssignment(
-        factory.createIdentifier("name"),
+  factory.createVariableStatement(
+    undefined,
+    factory.createVariableDeclarationList(
+      [factory.createVariableDeclaration(
+        factory.createIdentifier("person"),
+        undefined,
+        undefined,
         factory.createCallExpression(
           factory.createPropertyAccessExpression(
             factory.createIdentifier("z"),
-            factory.createIdentifier("string")
+            factory.createIdentifier("object")
           ),
           undefined,
-          []
+          [factory.createObjectLiteralExpression(
+            [
+              factory.createPropertyAssignment(
+                factory.createIdentifier("name"),
+                factory.createCallExpression(
+                  factory.createPropertyAccessExpression(
+                    factory.createIdentifier("z"),
+                    factory.createIdentifier("string")
+                  ),
+                  undefined,
+                  []
+                )
+              ),
+              factory.createPropertyAssignment(
+                factory.createIdentifier("age"),
+                factory.createCallExpression(
+                  factory.createPropertyAccessExpression(
+                    factory.createIdentifier("z"),
+                    factory.createIdentifier("number")
+                  ),
+                  undefined,
+                  []
+                )
+              )
+            ],
+            true
+          )]
         )
-      ),
-      factory.createPropertyAssignment(
-        factory.createIdentifier("age"),
-        factory.createCallExpression(
-          factory.createPropertyAccessExpression(
-            factory.createIdentifier("z"),
-            factory.createIdentifier("number")
-          ),
-          undefined,
-          []
-        )
-      )
-    ],
-    true
-  )]
-))
+      )],
+      ts.NodeFlags.Const
+    )
+  )
   ```
-  
 </details>
+<br/>
 
-This is not very easy to work with directly, and also not condusive for programmatically generating schemas.
+A big disadvantage of this pattern is that it is not as semantic as the zod schema itself, and is not easily extensible, modifiable or script-able. 
+
+This project introduces some abstractions on top of the TS compiler API specifically for the purpose of generating AST nodes for zod schemas. 
+
+Here, the above zod expression can be generated using this library in a number of different ways, as described in the [API](#api) section below.
 
 
 # Features
 
 ## API
-This library introduces some abstractions and explores some alternative APIs for generating zod validation. For example the above zod expression can be generated using this library in a number of different ways:
+The AST node for the zod schema above can be created using this library in 3 different ways:
 
-### `zf` - zod-factory core
+### `zf` - zod-factory main
 This exposes helper methods for generating the corresponding AST nodes that map to a zod schema. 
 
 ```typescript
@@ -87,6 +107,7 @@ zfs([
   }]
 ])
 ```
+The format for the arguments here is a list of lists, where each item in the outer list is of the shape: `['method', ...args]`.
 
 ### `zfl` - zod-factory 'lazy'
 And then finally, an API which has an API closest to zod itself, and executes 'lazily'. Under the hood, all arguments necessary to create the AST are accumulated until a call to `create` is made:
@@ -96,27 +117,32 @@ zfl().object({
   age: zfl().number().min(18).create(),
 }).create()
 ```
+This particular API is mostly for convenience, to make it feel more like zod itself.
 
 # Applications
-For the moment library has applicaitons primarily in code generation. In the `playground` directory, I experiment with some code generation tasks, including directly from expressions generated by `zf`, `zfs` and `zfl` above, and then also from schemas generated indirectly through a "custom-format".
+This project has applications primarily in code generation. In the `playground` directory, I experiment with some code generation tasks, including directly from expressions generated by `zf`, `zfs` and `zfl` above, and then also from an experimental "custom-format". See more below.
 
-This "custom-format" is not fully featured, but is a POC for code generation from other serliazed formats (e.g OpenAPI) or Google Protobufs (yet to be explored directly).
+## Codegen from TS Zod Factory AST Nodes
+Inside the playground, there is a `codegen.ts` script which takes a list of `filename:schemaNameRegex` arguments, and generates zod schemas from the schema AST node definitions in the file that match the regex.
 
-To run playground codegen script, run:
+To run the `playground` codegen script on the `main.ts` file in the same directory for example, run:
+```bash
+$ cd playground
+$ ts-node codegen.ts 'main:expression.*'
 ```
-cd playground
-ts-node codegen.ts <file:variableNameRegex>
-```
+
+## Codegen from Custom Validation Rules Format
+This "custom-format" is a basic format I came up with for defining validation rules that can be translated to zod. It is not fully featured, but is a POC for code generation from other validation rule definition formats. This format is very experimental.
 
 For the experimental custom format, run:
 To run playground codegen script, run:
-```
-cd playground
-ts-node codegen-custom-format.ts <file:variableNameRegex>
+```bash
+$ cd playground
+$ ts-node codegen-custom.ts 'custom-format:.*'
 ```
 
 # Acknowledgements
-This library is being put together as part of an Independent Study project I am undertaking with my advisor, professor Garret Morris in the Computer Science department at the University of Iowa.
+This library was birthed from an independent study course project I am undertaking with my advisor, professor Garret Morris at the University of Iowa.
 
 
 
