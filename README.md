@@ -132,7 +132,9 @@ $ ts-node codegen.ts 'main:expression.*'
 ```
 
 ## Codegen from Custom Validation Rules Format
-This "custom-format" is a basic format I came up with for defining validation rules that can be translated to zod. It is not fully featured, but is a POC for code generation from other validation rule definition formats. This format is very experimental.
+This "custom-format" is a basic format I came up with for defining validation rules that can be translated to zod. It is not fully featured, but is a POC for code generation from other validation rule definition formats to work on in the future (such as OpenAPI schemas, and Google's Protobufs)! 
+
+One interesting feature from OpenAPI it explores for the moment is named references to other schemas defined in the file, to allow using predefined schema within zod `object`'s and `array`'s for example.
 
 To run playground codegen script on some custom-format definitions, run:
 ```bash
