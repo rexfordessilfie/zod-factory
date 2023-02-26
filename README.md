@@ -134,8 +134,7 @@ $ ts-node codegen.ts 'main:expression.*'
 ## Codegen from Custom Validation Rules Format
 This "custom-format" is a basic format I came up with for defining validation rules that can be translated to zod. It is not fully featured, but is a POC for code generation from other validation rule definition formats. This format is very experimental.
 
-For the experimental custom format, run:
-To run playground codegen script, run:
+To run playground codegen script on some custom-format definitions, run:
 ```bash
 $ cd playground
 $ ts-node codegen-custom.ts 'custom-format:.*'
