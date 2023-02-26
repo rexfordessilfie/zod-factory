@@ -9,6 +9,7 @@ const endsWithExp = zf.stringMethods.endsWith(zf.string(), "endsWith");
 const emailExp = zf.stringMethods.email(zf.string());
 const uuidExp = zf.stringMethods.uuid(zf.string());
 
+// Source: https://github.com/colinhacks/zod/blob/master/src/__tests__/string.test.ts
 const baseSchema = printNode(baseExp);
 const minFiveSchema = printNode(minFiveExp);
 const maxTenSchema = printNode(maxTenExp);

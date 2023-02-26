@@ -1,6 +1,7 @@
 import { zfl } from "..";
 import { printNode } from "..";
 
+// Source: https://github.com/colinhacks/zod/blob/master/src/__tests__/array.test.ts
 const minTwoExp = zfl().string().array().min(2).create();
 const maxTwoExp = zfl().string().array().max(2).create();
 const justTwoExp = zfl().string().array().length(2).create();
