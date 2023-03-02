@@ -46,7 +46,7 @@ type ZodDiscriminatedUnionMembers = OnlyPublic<ZodDiscriminatedUnion<any, any>>;
 export const zodZ = "z" as const;
 export const zodZod = "zod" as const;
 
-export const zodTypeMembers = {
+export const zodSharedMembers = {
   or: "or",
   and: "and",
   array: "array",
@@ -66,7 +66,7 @@ export const zodTypeMembers = {
   superRefine: "superRefine",
 } as const satisfies Record<keyof ZodTypeMembers, string>;
 
-export const zodDirectTypeMembers = {
+export const zodDirectMembers = {
   any: "any",
   bigint: "bigint",
   boolean: "boolean",
@@ -127,7 +127,7 @@ export const zodStringMembers = {
   trim: "trim",
   datetime: "datetime",
   nonempty: "nonempty",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodStringMembers, string>;
 
 export const zodNumberMembers = {
@@ -145,13 +145,13 @@ export const zodNumberMembers = {
   nonpositive: "nonpositive",
   multipleOf: "multipleOf",
   finite: "finite",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodNumberMembers, string>;
 
 export const zodDateMembers = {
   min: "min",
   max: "max",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodDateMembers, string>;
 
 export const zodCoerceMembers = {
@@ -168,11 +168,11 @@ export const zodArrayMembers = {
   max: "max",
   length: "length",
   element: "element",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodArrayMembers, string>;
 
 export const zodBooleanMembers = {
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodBooleanMembers, string>;
 
 export const zodSetMethods = {
@@ -180,12 +180,12 @@ export const zodSetMethods = {
   max: "max",
   nonempty: "nonempty",
   size: "size",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodSetMembers, string>;
 
 export const zodUnionMethods = {
   options: "options",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodUnionMembers, string>;
 
 export const zodObjectMembers = {
@@ -205,7 +205,7 @@ export const zodObjectMembers = {
   setKey: "setKey",
   shape: "shape",
   strip: "strip",
-  ...zodTypeMembers,
+  ...zodSharedMembers,
 } as const satisfies Record<keyof ZodObjectMembers, string>;
 
 export const zodExtraMembers = {
@@ -214,13 +214,13 @@ export const zodExtraMembers = {
 } as const satisfies Partial<Record<keyof typeof z, string>>;
 
 export const zodTokens = {
-  ...zodDirectTypeMembers,
+  ...zodDirectMembers,
   ...zodStringMembers,
   ...zodNumberMembers,
   ...zodDateMembers,
   ...zodArrayMembers,
   ...zodSetMethods,
-  ...zodTypeMembers,
+  ...zodSharedMembers,
   ...zodObjectMembers,
   ...zodExtraMembers,
   ...zodCoerceMembers,
