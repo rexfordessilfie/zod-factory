@@ -1,4 +1,4 @@
-import { zf } from "../src/core";
+import { zf } from "../dist";
 
 export const expression = zf.object({
   name: zf.stringMethods.max(zf.string(), 20),

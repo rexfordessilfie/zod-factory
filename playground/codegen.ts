@@ -1,6 +1,9 @@
 import ts from "typescript";
-import { writeStatementsToFile } from "../src/utils";
-import { createSchemaExport, createZodImport } from "../src/utils/helpers";
+import {
+  createSchemaExport,
+  createZodImport,
+  writeStatementsToFile,
+} from "../dist";
 
 const schemaDestinations = process.argv.slice(2);
 

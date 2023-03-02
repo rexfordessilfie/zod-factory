@@ -1,7 +1,10 @@
 import ts from "typescript";
-import { zfs } from "../src/core";
-import { writeStatementsToFile } from "../src/utils";
-import { createSchemaExport, createZodImport } from "../src/utils/helpers";
+import {
+  zfs,
+  createSchemaExport,
+  createZodImport,
+  writeStatementsToFile,
+} from "../dist";
 
 const schemaDestinations = process.argv.slice(2);
 
