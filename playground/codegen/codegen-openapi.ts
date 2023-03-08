@@ -61,8 +61,11 @@ const visitRef = (ref: string) => {
   const name = ref.replace("#/components/schemas/", "");
   const existingExpression = schemaExpressionsRegistry.get(name);
   if (!existingExpression) {
-    console.log("No existing expression for $ref with name", name);
-    console.log("Skipping for now");
+    console.log(
+      "[codegen-openapi] No existing expression for $ref with name",
+      name
+    );
+    console.log("[codegen-openapi] Skipping for now");
     throw new MissingRefError(
       'No existing expression for $ref with name "' + name + '"'
     );
@@ -83,7 +86,11 @@ const visitObject = (schema: OpenAPIV3.SchemaObject) => {
     const expression = convertSchemaToExpression(value);
 
     if (!expression) {
-      console.log("No expression for property", key, "skipping");
+      console.log(
+        "[codegen-openapi] No expression for property",
+        key,
+        "skipping"
+      );
       return acc;
     }
 
@@ -122,7 +129,9 @@ const visitDefault = (schema: OpenAPIV3.SchemaObject) => {
     if (schemaConfig.allowedFormats.includes(schema.format)) {
       params.push([schema.format]);
     } else {
-      console.log("Unsupported format: ", schema.format, "..skipping");
+      console.log(
+        `[codegen-openapi] Unsupported format: ${schema.format} for type: ${schema.type}. Skipping...`
+      );
     }
   }
 
@@ -157,7 +166,7 @@ const visitAllOfUsingIntersection = (schema: OpenAPIV3.SchemaObject) => {
     const expression = convertSchemaToExpression(curr);
 
     if (!expression) {
-      console.log("Skipping empty allOf...");
+      console.log("[codegen-openapi] Skipping empty allOf...");
       return;
     }
 
@@ -181,7 +190,7 @@ const visitAllOfUsingAnd = (schema: OpenAPIV3.SchemaObject) => {
     let expression = convertSchemaToExpression(curr);
 
     if (!expression) {
-      console.log("Skipping empty allOf...");
+      console.log("[codegen-openapi] Skipping empty allOf...");
       return;
     }
 
@@ -197,7 +206,7 @@ const visitAllOfUsingAnd = (schema: OpenAPIV3.SchemaObject) => {
     if ("_zfType" in expression) {
       const memberMethods = zodSubMemberCreators[expression._zfType];
       // @ts-ignore
-      memberMethods.and(finalExpression, expression);
+      finalExpression = memberMethods.and(finalExpression, expression);
     }
   });
 
@@ -265,14 +274,20 @@ for (const schemaDestination of schemaDestinations) {
       schemaFile["components"]?.["schemas"]?.[schemaExpressionName];
 
     if (!componentSchema) {
-      console.log("No component schema for", schemaExpressionName);
+      console.log(
+        "[codegen-openapi] No component schema for",
+        schemaExpressionName
+      );
       continue;
     }
 
     try {
       const schemaExpression = convertSchemaToExpression(componentSchema);
 
-      console.log("Generated schema for:", schemaExpressionName);
+      console.log(
+        "[codegen-openapi] Generated schema for:",
+        schemaExpressionName
+      );
 
       statementsPerFile[fileName] = statementsPerFile[fileName] ?? [];
 
@@ -291,7 +306,7 @@ for (const schemaDestination of schemaDestinations) {
       }
     } catch (e) {
       if ((e as MissingRefError).isMissingRefError) {
-        console.log("Missing ref, pushing back to queue");
+        console.log("[codegen-openapi] Missing ref, pushing back to queue");
         queue.push(schemaExpressionName);
       } else {
         throw e;
