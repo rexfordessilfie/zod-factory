@@ -4,9 +4,14 @@ import {
   createSchemaExport,
   createZodImport,
   writeStatementsToFile,
-} from "../dist";
+} from "../../dist";
+import { parseArguments } from "./helpers";
 
-const schemaDestinations = process.argv.slice(2);
+const args = process.argv.slice(2);
+
+const parsedArgs = parseArguments(args);
+let schemaDestinations: string[] = parsedArgs.schemaDestinations;
+let directory = parsedArgs.directory;
 
 const statementsPerFile: Record<string, ts.Statement[]> = {};
 
@@ -133,7 +138,7 @@ function convertCustomFormatToSchemaExpression(
 for (const schemaDestination of schemaDestinations) {
   const [fileName, expressionPattern = ".*"] = schemaDestination.split(":");
 
-  const fileModule = require(`./${fileName}`);
+  const fileModule = require(`${process.cwd()}/${directory}/${fileName}`);
 
   const schemaExpressionNames = Object.keys(fileModule).filter((key) =>
     new RegExp(`^${expressionPattern}$`).test(key)

@@ -1,4 +1,4 @@
-import { zfs, zodTokens } from "../dist";
+import { zfs, zodTokens } from "../../dist";
 
 export const expression = zfs([
   [
