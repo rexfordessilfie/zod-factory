@@ -17,31 +17,53 @@ class MissingRefError extends Error {
   }
 }
 
-// order of operations
-// First we get the type, then translate it to equivalent zod type.
-// Also all the while we are building up the zfs params
+const schemaTranslations = {
+  pattern: "regex",
+  minLength: "min",
+  maxLength: "max",
+  description: "describe",
+  minimum: "min",
+  maximum: "max",
+  default: "catch",
+  maxItems: "max",
+  minItems: "min",
+} satisfies Partial<Record<keyof OpenAPIV3.SchemaObject, string>>;
+
+const schemaTypeTranslations = {
+  integer: "number",
+} satisfies Partial<Record<Required<OpenAPIV3.SchemaObject>["type"], string>>;
+
+const formatTranslations = {
+  "date-time": "date",
+};
+
+const stringFormats = [
+  "date",
+  "date-time",
+  "email",
+  "ipv4",
+  "ipv6",
+  "uri",
+  "uuid",
+];
+
+const chainableTokens = [
+  "minimum",
+  "maximum",
+  "maxItems",
+  "minItems",
+  "description",
+  "default",
+] satisfies (keyof OpenAPIV3.BaseSchemaObject)[];
 
 const schemaConfig = {
   translations: {
-    pattern: "regex",
-    minLength: "min",
-    maxLength: "max",
-    description: "describe",
-    minimum: "min",
-    maximum: "max",
-    integer: "number",
+    ...schemaTranslations,
+    ...schemaTypeTranslations,
+    ...formatTranslations,
   },
-  allowedFormats: [
-    "date",
-    "date-time",
-    "email",
-    "hostname",
-    "ipv4",
-    "ipv6",
-    "uri",
-    "uuid",
-  ],
-  ignoredTokens: ["readOnly", "writeOnly", "type", "oneOf", "format", "enum"],
+  allowedFormats: [...stringFormats],
+  chainableTokens: [...chainableTokens],
 };
 
 const translateSymbol = (symbol: string) => {
@@ -125,6 +147,10 @@ const visitDefault = (schema: OpenAPIV3.SchemaObject) => {
     params.push([token]);
   }
 
+  if (schema.type === "integer") {
+    params.push([zodTokens.int]);
+  }
+
   if (schema.format) {
     if (schemaConfig.allowedFormats.includes(schema.format)) {
       params.push([schema.format]);
@@ -135,8 +161,9 @@ const visitDefault = (schema: OpenAPIV3.SchemaObject) => {
     }
   }
 
+  // Add the chainable tokens
   Object.entries(schema).forEach(([key, value]) => {
-    if (schemaConfig.ignoredTokens.includes(key)) {
+    if (!schemaConfig.chainableTokens.includes(key as any)) {
       return;
     }
 

@@ -9,6 +9,12 @@ export const NewPet = z.object({
   tag: z.optional(z.string()),
 });
 
-export const Error = z.object({ code: z.number(), message: z.string() });
+export const Error = z.object({
+  code: z.number().int().describe("The description of code"),
+  message: z
+    .string()
+    .catch("hello from message")
+    .describe("The description of message"),
+});
 
-export const Pet = NewPet.and(z.object({ id: z.number() }));
+export const Pet = NewPet.and(z.object({ id: z.number().int() }));

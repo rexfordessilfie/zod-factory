@@ -227,10 +227,13 @@
         "properties": {
           "code": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "The description of code"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "default": "hello from message",
+            "description": "The description of message"
           }
         }
       }
