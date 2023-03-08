@@ -1,4 +1,5 @@
 import {
+  callExpressionCreatorWithPreviousType,
   callExpressionCreatorWithTarget,
   propertyAccessExpressionCreatorWithTarget,
   zodIdentifier,
@@ -12,6 +13,9 @@ import { objectMemberCreators } from "./core/object";
 import { stringMemberCreators } from "./core/string";
 
 export const zodDirectMemberCreators = {
+  union: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.union),
+  enum: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.enum),
+  literal: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.literal),
   string: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.string),
   number: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.number),
   boolean: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.boolean),
@@ -22,6 +26,44 @@ export const zodDirectMemberCreators = {
   coerce: propertyAccessExpressionCreatorWithTarget(
     zodIdentifier,
     zodTokens.coerce
+  ),
+  any: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.any),
+  unknown: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.unknown),
+  bigint: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.bigint),
+  date: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.date),
+  function: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.function),
+  null: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.null),
+  undefined: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.undefined
+  ),
+  never: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.never),
+  void: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.void),
+  nullable: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.nullable),
+  custom: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.custom),
+  map: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.map),
+  set: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.set),
+  record: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.record),
+  tuple: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.tuple),
+  intersection: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.intersection
+  ),
+  nan: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.nan),
+  oboolean: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.oboolean),
+  discriminatedUnion: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.discriminatedUnion
+  ),
+  instanceof: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.instanceof
+  ),
+  onumber: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.onumber),
+  ostring: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.ostring),
+  nativeEnum: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.nativeEnum
   ),
 } as const satisfies Partial<Record<keyof typeof zodDirectMembers, any>>;
 
