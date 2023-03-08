@@ -1,4 +1,4 @@
-import { zfl } from "../dist";
+import { zfl } from "../../dist";
 
 export const expression = zfl()
   .object({

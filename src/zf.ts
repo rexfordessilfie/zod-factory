@@ -65,6 +65,23 @@ export const zodDirectMemberCreators = {
     zodIdentifier,
     zodTokens.nativeEnum
   ),
+  lazy: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.lazy),
+  transformer: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.transformer
+  ),
+
+  effect: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.effect),
+  pipeline: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.pipeline),
+  preprocess: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.preprocess
+  ),
+  symbol: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.symbol),
+  strictObject: callExpressionCreatorWithTarget(
+    zodIdentifier,
+    zodTokens.strictObject
+  ),
 } as const satisfies Partial<Record<keyof typeof zodDirectMembers, any>>;
 
 export const zodSubMemberCreators = {

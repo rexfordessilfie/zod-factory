@@ -24,10 +24,18 @@ export function zodFactorySerial<T extends AllLazyMembers>(
     const typeMethodKey = `${acc._zfType}` as const;
 
     if (!(typeMethodKey in zf)) {
-      throw new Error(`Unrecognized _zfType for expression: ${acc._zfType}`);
+      throw new Error(
+        `Unrecognized _zfType for expression: ${acc._zfType} on member: ${currMethod}}`
+      );
     }
 
     const typeMethods = zodSubMemberCreators[typeMethodKey];
+
+    if (!typeMethods) {
+      throw new Error(
+        `Missing sub methods for _zfType: ${acc._zfType} on member: ${currMethod}}`
+      );
+    }
 
     if (!(currMethod in typeMethods)) {
       throw new Error(`Unrecognized sub member: ${currMethod}`);
@@ -38,8 +46,6 @@ export function zodFactorySerial<T extends AllLazyMembers>(
     //@ts-ignore
     const result = creator(acc, ...currArgs);
     return result;
-
-    return acc;
   }, initialExpression as ts.Expression & { _zfType: keyof typeof zodSubMemberCreators });
 }
 
