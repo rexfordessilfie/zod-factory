@@ -20,6 +20,6 @@ export function buildSharedZodMemberCreators<
     nullable: callExpressionCreatorWithFactoryType(zodTokens.nullable, type),
     optional: callExpressionCreatorWithFactoryType(zodTokens.optional, type),
     nullish: callExpressionCreatorWithFactoryType(zodTokens.nullish, type),
-    catch: callExpressionCreatorWithFactoryType(zodTokens.nullish, type),
+    catch: callExpressionCreatorWithFactoryType(zodTokens.catch, type),
   } as const satisfies Partial<Record<keyof typeof zodSharedMembers, any>>;
 }
