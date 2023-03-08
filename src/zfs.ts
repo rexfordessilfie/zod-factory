@@ -13,7 +13,7 @@ export function zodFactorySerial<T extends AllLazyMembers>(
   const creator = zf[initialMember];
 
   if (typeof creator !== "function") {
-    throw new Error(`Invalid initial member: ${initialMember}`);
+    throw new Error(`Unrecognized initial member: ${initialMember}`);
   }
 
   const initialExpression = creator(...initialMemberArgs);
@@ -22,22 +22,22 @@ export function zodFactorySerial<T extends AllLazyMembers>(
     const [currMethod, ...currArgs] = curr;
 
     const typeMethodKey = `${acc._zfType}` as const;
-    if (typeMethodKey in zf) {
-      const typeMethods = zodSubMemberCreators[typeMethodKey];
-      if (typeMethods) {
-        if (currMethod in typeMethods) {
-          const creator = typeMethods[currMethod as keyof typeof typeMethods];
 
-          if (typeof creator !== "function") {
-            throw new Error(`Invalid member: ${currMethod}`);
-          }
-
-          //@ts-ignore
-          const result = creator(acc, ...currArgs);
-          return result;
-        }
-      }
+    if (!(typeMethodKey in zf)) {
+      throw new Error(`Unrecognized _zfType for expression: ${acc._zfType}`);
     }
+
+    const typeMethods = zodSubMemberCreators[typeMethodKey];
+
+    if (!(currMethod in typeMethods)) {
+      throw new Error(`Unrecognized sub member: ${currMethod}`);
+    }
+
+    const creator = typeMethods[currMethod as keyof typeof typeMethods];
+
+    //@ts-ignore
+    const result = creator(acc, ...currArgs);
+    return result;
 
     return acc;
   }, initialExpression as ts.Expression & { _zfType: keyof typeof zodSubMemberCreators });
