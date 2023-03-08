@@ -7,14 +7,6 @@ import {
 } from "../../dist";
 import { parseArguments } from "./helpers";
 
-const args = process.argv.slice(2);
-
-const parsedArgs = parseArguments(args);
-let schemaDestinations: string[] = parsedArgs.schemaDestinations;
-let directory = parsedArgs.directory;
-
-const statementsPerFile: Record<string, ts.Statement[]> = {};
-
 // WARNING: not fully featured, just a proof of concept
 type CustomFormat = {
   $kind: string;
@@ -27,10 +19,7 @@ type CustomFormat = {
   $refs?: string[];
 };
 
-function convertCustomFormatToSchemaExpression(
-  customFormat: CustomFormat,
-  schemaExpressionsSoFar: Record<string, ts.Expression>
-) {
+function convertCustomFormatToSchemaExpression(customFormat: CustomFormat) {
   return visitCustomFormat(customFormat);
 
   function buildZodRawCreateParams(customFormat: CustomFormat) {
@@ -59,7 +48,7 @@ function convertCustomFormatToSchemaExpression(
       Object.entries(customFormat.$fields).reduce((acc, [key, value]) => {
         if (typeof value === "string") {
           const name = value.replace("$ref:", "");
-          acc[key] = schemaExpressionsSoFar[name];
+          acc[key] = schemaExpressions.get(name);
         } else {
           acc[key] = visitCustomFormat(value);
         }
@@ -82,7 +71,7 @@ function convertCustomFormatToSchemaExpression(
 
     if (typeof customFormat.$element === "string") {
       const name = customFormat.$element.replace("$ref:", "");
-      element = schemaExpressionsSoFar[name];
+      element = schemaExpressions.get(name);
     } else {
       element = visitCustomFormat(customFormat.$element);
     }
@@ -135,6 +124,15 @@ function convertCustomFormatToSchemaExpression(
   }
 }
 
+const args = process.argv.slice(2);
+const parsedArgs = parseArguments(args);
+let schemaDestinations: string[] = parsedArgs.schemaDestinations;
+
+let directory = parsedArgs.directory;
+
+const statementsPerFile: Record<string, ts.Statement[]> = {};
+const schemaExpressions = new Map<string, ts.Expression>();
+
 for (const schemaDestination of schemaDestinations) {
   const [fileName, expressionPattern = ".*"] = schemaDestination.split(":");
 
@@ -146,16 +144,13 @@ for (const schemaDestination of schemaDestinations) {
 
   const queue = [...schemaExpressionNames];
 
-  const schemaNamesSoFar = new Set<string>();
-  const schemaExpressionsSoFar: Record<string, ts.Expression> = {};
-
   while (queue.length > 0) {
     const schemaExpressionName = queue.shift()!;
     const customFormat: CustomFormat = fileModule[schemaExpressionName];
 
     const allRefsGenerated =
       !customFormat.$refs ||
-      customFormat.$refs.every((ref) => schemaNamesSoFar.has(ref));
+      customFormat.$refs.every((ref) => schemaExpressions.has(ref));
 
     if (!allRefsGenerated) {
       queue.push(schemaExpressionName);
@@ -163,10 +158,8 @@ for (const schemaDestination of schemaDestinations) {
     }
 
     // TODO: detect nonexistent ref and raise error
-    const schemaExpression = convertCustomFormatToSchemaExpression(
-      customFormat,
-      schemaExpressionsSoFar
-    );
+    const schemaExpression =
+      convertCustomFormatToSchemaExpression(customFormat);
 
     statementsPerFile[fileName] = statementsPerFile[fileName] ?? [];
 
@@ -178,8 +171,7 @@ for (const schemaDestination of schemaDestinations) {
 
     statements.push(createSchemaExport(schemaExpressionName, schemaExpression));
 
-    schemaNamesSoFar.add(schemaExpressionName);
-    schemaExpressionsSoFar[schemaExpressionName] = schemaExpression;
+    schemaExpressions.set(schemaExpressionName, schemaExpression);
   }
 }
 
