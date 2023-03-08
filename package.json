@@ -1,13 +1,13 @@
 {
   "name": "zod-factory",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Typescript compiler API factory abstractions for creating zod validation schemas.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
-    "prepublish": "npm run build",
+    "prepublish": "npm run test; npm run build",
     "test": "jest --coverage"
   },
   "keywords": [
