@@ -138,24 +138,22 @@ const visitDefault = (schema: OpenAPIV3.SchemaObject) => {
   return zfs(params);
 };
 
-const visitOneOf = (oneOf: Required<OpenAPIV3.SchemaObject>["oneOf"]) => {
+const visitOneOf = (schema: OpenAPIV3.SchemaObject) => {
   const params: any = [];
 
-  params.push([
-    zodTokens.union,
-    oneOf.map((item) => convertSchemaToExpression(item)),
-  ]);
+  if (schema.oneOf)
+    params.push([
+      zodTokens.union,
+      schema.oneOf.map((item) => convertSchemaToExpression(item)),
+    ]);
 
   return zfs(params);
 };
 
-const visitAllOfWithIntersection = (
-  allOf: Required<OpenAPIV3.SchemaObject>["allOf"],
-  schemaExpressions: Record<string, ts.Expression>
-) => {
+const visitAllOfUsingIntersection = (schema: OpenAPIV3.SchemaObject) => {
   let finalExpression: ts.Expression | undefined;
 
-  allOf.forEach((curr) => {
+  schema.allOf?.forEach((curr) => {
     const expression = convertSchemaToExpression(curr);
 
     if (!expression) {
@@ -176,12 +174,10 @@ const visitAllOfWithIntersection = (
   return finalExpression;
 };
 
-const visitAllOfWithAnd = (
-  allOf: Required<OpenAPIV3.SchemaObject>["allOf"]
-) => {
+const visitAllOfUsingAnd = (schema: OpenAPIV3.SchemaObject) => {
   let finalExpression: ReturnType<typeof zfs> | ts.Identifier | undefined;
 
-  allOf.forEach((curr, idx) => {
+  schema.allOf?.forEach((curr, idx) => {
     let expression = convertSchemaToExpression(curr);
 
     if (!expression) {
@@ -193,12 +189,15 @@ const visitAllOfWithAnd = (
       finalExpression = expression;
       return;
     }
-    if (finalExpression) {
+
+    if (!finalExpression) {
+      return;
+    }
+
+    if ("_zfType" in expression) {
+      const memberMethods = zodSubMemberCreators[expression._zfType];
       // @ts-ignore
-      finalExpression = zodSubMemberCreators[`${expression._zfType}`].and(
-        finalExpression,
-        expression
-      );
+      memberMethods.and(finalExpression, expression);
     }
   });
 
@@ -219,11 +218,11 @@ const convertSchemaToExpression = (
   }
 
   if (schema.oneOf) {
-    return visitOneOf(schema.oneOf);
+    return visitOneOf(schema);
   }
 
   if (schema.allOf) {
-    return visitAllOfWithAnd(schema.allOf);
+    return visitAllOfUsingAnd(schema);
   }
 
   if ("type" in schema) {
