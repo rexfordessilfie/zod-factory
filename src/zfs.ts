@@ -10,8 +10,13 @@ export function zodFactorySerial<T extends AllLazyMembers>(
   const [_initialMember, ...initialMemberArgs] = first || [];
 
   let initialMember = _initialMember as keyof OnlyMethods<typeof zf>;
+  const creator = zf[initialMember];
 
-  const initialExpression = zf[initialMember](...initialMemberArgs);
+  if (typeof creator !== "function") {
+    throw new Error(`Invalid initial member: ${initialMember}`);
+  }
+
+  const initialExpression = creator(...initialMemberArgs);
 
   return rest.reduce((acc, curr) => {
     const [currMethod, ...currArgs] = curr;
@@ -22,6 +27,11 @@ export function zodFactorySerial<T extends AllLazyMembers>(
       if (typeMethods) {
         if (currMethod in typeMethods) {
           const creator = typeMethods[currMethod as keyof typeof typeMethods];
+
+          if (typeof creator !== "function") {
+            throw new Error(`Invalid member: ${currMethod}`);
+          }
+
           //@ts-ignore
           const result = creator(acc, ...currArgs);
           return result;
