@@ -97,6 +97,8 @@ export const convertToExpression = (arg: any): ts.Expression => {
       return arg ? factory.createTrue() : factory.createFalse();
     case "object":
       return convertObjectToExpression(arg);
+    case "function":
+      return factory.createIdentifier(arg.toString());
     default:
       throw new Error(`Unsupported type: ${typeof arg}`);
   }
