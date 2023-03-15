@@ -31,5 +31,16 @@ export const stringMemberCreators = {
     zodTokens.endsWith,
     zodTokens.string
   ),
+  cuid: callExpressionCreatorWithFactoryType(zodTokens.cuid, zodTokens.string),
+  cuid2: callExpressionCreatorWithFactoryType(
+    zodTokens.cuid2,
+    zodTokens.string
+  ),
+  url: callExpressionCreatorWithFactoryType(zodTokens.url, zodTokens.string),
+  regex: callExpressionCreatorWithFactoryType(
+    zodTokens.regex,
+    zodTokens.string
+  ),
+  trim: callExpressionCreatorWithFactoryType(zodTokens.trim, zodTokens.string),
   ...buildSharedZodMemberCreators(zodTokens.string),
 } as const satisfies Partial<Record<keyof typeof zodStringMembers, any>>;

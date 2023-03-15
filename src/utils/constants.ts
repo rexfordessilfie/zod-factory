@@ -175,7 +175,7 @@ export const zodBooleanMembers = {
   ...zodSharedMembers,
 } as const satisfies Record<keyof ZodBooleanMembers, string>;
 
-export const zodSetMethods = {
+export const zodSetMembers = {
   min: "min",
   max: "max",
   nonempty: "nonempty",
@@ -183,7 +183,7 @@ export const zodSetMethods = {
   ...zodSharedMembers,
 } as const satisfies Record<keyof ZodSetMembers, string>;
 
-export const zodUnionMethods = {
+export const zodUnionMembers = {
   options: "options",
   ...zodSharedMembers,
 } as const satisfies Record<keyof ZodUnionMembers, string>;
@@ -219,7 +219,7 @@ export const zodTokens = {
   ...zodNumberMembers,
   ...zodDateMembers,
   ...zodArrayMembers,
-  ...zodSetMethods,
+  ...zodSetMembers,
   ...zodSharedMembers,
   ...zodObjectMembers,
   ...zodExtraMembers,

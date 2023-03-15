@@ -11,6 +11,8 @@ import { coerceMemberCreators } from "./core/coerce";
 import { numberMemberCreators } from "./core/number";
 import { objectMemberCreators } from "./core/object";
 import { stringMemberCreators } from "./core/string";
+import { setMemberCreators } from "./core/set";
+import { buildSharedZodMemberCreators } from "./core/shared";
 
 export const zodDirectMemberCreators = {
   union: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.union),
@@ -90,6 +92,7 @@ export const zodSubMemberCreators = {
   number: numberMemberCreators,
   coerce: coerceMemberCreators,
   array: arrayMemberCreators,
+  set: setMemberCreators,
   boolean: booleanMemberCreators,
 } as const satisfies Partial<Record<keyof typeof zodDirectMembers, any>>;
 
@@ -100,6 +103,7 @@ export const zodFactory = {
   numberMethods: zodSubMemberCreators.number,
   coerceMethods: zodSubMemberCreators.coerce,
   arrayMethods: zodSubMemberCreators.array,
+  setMethods: zodSubMemberCreators.set,
 } as const;
 
 export { zodFactory as zf };
