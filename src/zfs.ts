@@ -24,9 +24,14 @@ export function zodFactorySerial<T extends AllLazyMembers>(
 
     const typeMethodKey = `${acc._zfType}` as const;
 
+    // If we don't have sub methods defined for this, fall back to the shared methods
     if (!(typeMethodKey in zf)) {
       const creator =
         zodSharedMemberCreators[currMethod as keyof typeof typeMethods];
+
+      if (!creator) {
+        throw new Error(`Unrecognized shared member: ${currMethod}`);
+      }
 
       //@ts-ignore
       const result = creator(acc, ...currArgs);
@@ -46,6 +51,10 @@ export function zodFactorySerial<T extends AllLazyMembers>(
     }
 
     const creator = typeMethods[currMethod as keyof typeof typeMethods];
+
+    if (!creator) {
+      throw new Error(`Unrecognized sub member: ${currMethod}`);
+    }
 
     //@ts-ignore
     const result = creator(acc, ...currArgs);
