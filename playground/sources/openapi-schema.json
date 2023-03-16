@@ -228,6 +228,8 @@
           "code": {
             "type": "integer",
             "format": "int32",
+            "maximum": 10,
+            "exclusiveMaximum": true,
             "description": "The description of code"
           },
           "message": {
