@@ -12,7 +12,6 @@ import { numberMemberCreators } from "./core/number";
 import { objectMemberCreators } from "./core/object";
 import { stringMemberCreators } from "./core/string";
 import { setMemberCreators } from "./core/set";
-import { buildSharedZodMemberCreators } from "./core/shared";
 
 export const zodDirectMemberCreators = {
   union: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.union),
