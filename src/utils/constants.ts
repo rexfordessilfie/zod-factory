@@ -4,7 +4,6 @@ import {
   ZodBoolean,
   ZodDate,
   ZodDiscriminatedUnion,
-  ZodEnum,
   ZodNumber,
   ZodObject,
   ZodSet,
@@ -38,10 +37,10 @@ type ZodArrayMembers = OnlyReturningZodType<OnlyPublic<ZodArray<any>>>;
 type ZodSetMembers = OnlyReturningZodType<OnlyPublic<ZodSet<any>>>;
 type ZodNumberMembers = OnlyReturningZodType<OnlyPublic<ZodNumber>>;
 type ZodDateMembers = OnlyReturningZodType<OnlyPublic<ZodDate>>;
-type ZodEnumMembers = OnlyReturningZodType<OnlyPublic<ZodEnum<[string]>>>;
 type ZodObjectMembers = OnlyReturningZodType<OnlyPublic<ZodObject<any>>>;
 type ZodUnionMembers = OnlyReturningZodType<OnlyPublic<ZodUnion<any>>>;
 type ZodCoerceMembers = OnlyReturningZodType<OnlyPublic<(typeof z)["coerce"]>>;
+
 type ZodDiscriminatedUnionMembers = OnlyPublic<ZodDiscriminatedUnion<any, any>>;
 
 export const zodZ = "z" as const;
@@ -161,12 +160,6 @@ export const zodDateMembers = {
   max: "max",
   ...zodSharedMembers,
 } as const satisfies Record<keyof ZodDateMembers, string>;
-
-export const zodEnumMembers = {
-  extract: "extract",
-  exclude: "exclude",
-  ...zodSharedMembers,
-} as const satisfies Record<keyof ZodEnumMembers, string>;
 
 export const zodCoerceMembers = {
   string: "string",

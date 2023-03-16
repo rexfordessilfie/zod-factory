@@ -42,31 +42,5 @@ export const stringMemberCreators = {
     zodTokens.string
   ),
   trim: callExpressionCreatorWithFactoryType(zodTokens.trim, zodTokens.string),
-  emoji: callExpressionCreatorWithFactoryType(
-    zodTokens.emoji,
-    zodTokens.string
-  ),
-  toLowerCase: callExpressionCreatorWithFactoryType(
-    zodTokens.toLowerCase,
-    zodTokens.string
-  ),
-  toUpperCase: callExpressionCreatorWithFactoryType(
-    zodTokens.toUpperCase,
-    zodTokens.string
-  ),
-  ulid: callExpressionCreatorWithFactoryType(zodTokens.ulid, zodTokens.string),
-  includes: callExpressionCreatorWithFactoryType(
-    zodTokens.includes,
-    zodTokens.string
-  ),
-  length: callExpressionCreatorWithFactoryType(
-    zodTokens.length,
-    zodTokens.string
-  ),
-  ip: callExpressionCreatorWithFactoryType(zodTokens.ip, zodTokens.string),
-  datetime: callExpressionCreatorWithFactoryType(
-    zodTokens.datetime,
-    zodTokens.string
-  ),
   ...buildSharedZodMemberCreators(zodTokens.string),
-} as const satisfies Record<keyof typeof zodStringMembers, any>;
+} as const satisfies Partial<Record<keyof typeof zodStringMembers, any>>;

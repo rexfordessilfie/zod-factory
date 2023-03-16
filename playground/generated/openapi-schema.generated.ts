@@ -10,7 +10,7 @@ export const NewPet = z.object({
 });
 
 export const Error = z.object({
-  code: z.number().int().lt(10).describe("The description of code"),
+  code: z.number().int().describe("The description of code"),
   message: z
     .string()
     .catch("hello from message")
