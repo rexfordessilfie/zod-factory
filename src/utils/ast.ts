@@ -68,11 +68,23 @@ export const convertObjectToExpression = (obj: any) => {
 export const convertToExpression = (arg: any): ts.Expression => {
   // TODO: expand to cover more type of expressions?
 
+  if (arg === null) {
+    return factory.createNull();
+  }
+
+  if (typeof arg === "undefined") {
+    return factory.createIdentifier("undefined");
+  }
+
   if (ts.isIdentifier(arg)) {
     return arg;
   }
 
   if (ts.isCallExpression(arg)) {
+    return arg;
+  }
+
+  if (ts.isPropertyAccessExpression(arg)) {
     return arg;
   }
 
@@ -83,8 +95,6 @@ export const convertToExpression = (arg: any): ts.Expression => {
   }
 
   switch (typeof arg) {
-    case "undefined":
-      return factory.createIdentifier("undefined");
     case "symbol":
       return factory.createIdentifier(arg.toString());
     case "bigint":
