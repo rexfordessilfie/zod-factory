@@ -39,5 +39,11 @@ export const numberMemberCreators = {
     zodTokens.finite,
     zodTokens.number
   ),
+  lt: callExpressionCreatorWithFactoryType(zodTokens.lt, zodTokens.number),
+  lte: callExpressionCreatorWithFactoryType(zodTokens.lte, zodTokens.number),
+  gt: callExpressionCreatorWithFactoryType(zodTokens.gt, zodTokens.number),
+  gte: callExpressionCreatorWithFactoryType(zodTokens.gte, zodTokens.number),
+  step: callExpressionCreatorWithFactoryType(zodTokens.step, zodTokens.number),
+  safe: callExpressionCreatorWithFactoryType(zodTokens.safe, zodTokens.number),
   ...buildSharedZodMemberCreators(zodTokens.number),
-} as const satisfies Partial<Record<keyof typeof zodNumberMembers, any>>;
+} as const satisfies Record<keyof typeof zodNumberMembers, any>;
