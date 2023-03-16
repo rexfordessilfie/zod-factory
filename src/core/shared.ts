@@ -20,6 +20,8 @@ export function buildSharedZodMemberCreators<
     transform: callExpressionCreator(zodTokens.transform),
     refine: callExpressionCreator(zodTokens.refine),
     superRefine: callExpressionCreator(zodTokens.superRefine),
+    refinement: callExpressionCreator(zodTokens.refinement),
+    parse: callExpressionCreator(zodTokens.parse),
 
     // Type preserving methods
     describe: callExpressionCreatorWithFactoryType(
