@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
-    "prepublish": "npm run test; npm run build",
+    "prepublish": "rm -rf dist; npm run test; npm run build",
     "test": "jest --coverage"
   },
   "keywords": [
