@@ -188,9 +188,99 @@
   },
   "components": {
     "schemas": {
-      "Hello": {
+      "HelloOrWorld": {
         "type": "string",
         "enum": ["Hello", "World"]
+      },
+      "User": {
+        "required": [
+          "id",
+          "username",
+          "firstName",
+          "lastName",
+          "email",
+          "password",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The user's id",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "username": {
+            "type": "string",
+            "description": "The user's username",
+            "example": "johndoe"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The user's first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The user's last name",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "The user's email",
+            "example": "johndoe@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "The user's password",
+            "example": "password"
+          },
+          "phone": {
+            "type": "string",
+            "description": "The user's phone number",
+            "example": "1234567890"
+          },
+          "favoriteEmoji": {
+            "type": "string",
+            "format": "emoji",
+            "description": "User's favorite emoji",
+            "example": "🐶"
+          }
+        }
+      },
+      "Connection": {
+        "required": ["username", "ipAddressV4"],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "ipAddressV4": {
+            "type": "string",
+            "format": "ipv4"
+          },
+          "ipAddressV6": {
+            "type": "string",
+            "format": "ipv6"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "Pets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Pet"
+        },
+        "maxItems": 5
+      },
+      "NewPets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NewPet"
+        }
       },
       "Pet": {
         "allOf": [

@@ -32,6 +32,9 @@ const stringFormats = {
   ipv6: "ip",
   uri: "url",
   uuid: "uuid",
+  cuid: "cuid",
+  cuid2: "cuid2",
+  ulid: "ulid",
 } satisfies Partial<Record<string, keyof typeof zodTokens>>;
 
 const visitRef = (ref: string) => {
@@ -60,7 +63,7 @@ const visitObject = (schema: OpenAPIV3.SchemaObject) => {
     const [key, value] = curr;
     const isRequired = required.includes(key);
 
-    const expression = convertSchemaToExpression(value);
+    const expression = convertOpenApiSchemaObjectToZod(value);
 
     if (!expression) {
       console.log(
@@ -88,7 +91,7 @@ const visitObject = (schema: OpenAPIV3.SchemaObject) => {
 const visitArray = (schema: OpenAPIV3.ArraySchemaObject) => {
   const itemsSchema = schema.items;
   const params: any = [];
-  params.push([zodTokens.array, convertSchemaToExpression(itemsSchema)]);
+  params.push([zodTokens.array, convertOpenApiSchemaObjectToZod(itemsSchema)]);
 
   if (schema.maxItems) {
     params.push([zodTokens.max, schema.maxItems]);
@@ -119,9 +122,20 @@ const visitString = (schema: OpenAPIV3.SchemaObject) => {
   params.push([zodTokens.string]);
 
   if (schema.format) {
-    const format = stringFormats[schema.format as keyof typeof stringFormats];
-    if (format) {
-      params.push([format]);
+    const formatToken =
+      stringFormats[schema.format as keyof typeof stringFormats];
+
+    if (formatToken) {
+      switch (schema.format) {
+        case "ipv4":
+          params.push([zodTokens.ip, { version: "v4" }]);
+          break;
+        case "ipv6":
+          params.push([zodTokens.ip, { version: "v6" }]);
+          break;
+        default:
+          params.push([formatToken]);
+      }
     } else {
       console.log(
         `[codegen-openapi] Unsupported format: ${schema.format} for type: ${schema.type}. Skipping...`
@@ -197,7 +211,7 @@ const visitOneOf = (schema: OpenAPIV3.SchemaObject) => {
   if (schema.oneOf)
     params.push([
       zodTokens.union,
-      schema.oneOf.map((item) => convertSchemaToExpression(item)),
+      schema.oneOf.map((item) => convertOpenApiSchemaObjectToZod(item)),
     ]);
 
   extendSharedParams(schema, params);
@@ -206,7 +220,7 @@ const visitOneOf = (schema: OpenAPIV3.SchemaObject) => {
 
 const visitAllOf = (schema: OpenAPIV3.SchemaObject) => {
   const expressions = schema.allOf?.map((item) =>
-    convertSchemaToExpression(item)
+    convertOpenApiSchemaObjectToZod(item)
   ) as (ts.Expression & { _zfType: string })[];
 
   if (!expressions) {
@@ -223,7 +237,7 @@ const visitAllOf = (schema: OpenAPIV3.SchemaObject) => {
   return expression;
 };
 
-const convertSchemaToExpression = (
+const convertOpenApiSchemaObjectToZod = (
   schema: Required<OpenAPIV3.ComponentsObject>["schemas"][string]
 ) => {
   if (!schema) {
@@ -306,7 +320,7 @@ for (const schemaDestination of schemaDestinations) {
     }
 
     try {
-      const schemaExpression = convertSchemaToExpression(componentSchema);
+      const schemaExpression = convertOpenApiSchemaObjectToZod(componentSchema);
 
       console.log(
         "[codegen-openapi] Generated schema for:",
