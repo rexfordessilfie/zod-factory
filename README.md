@@ -68,18 +68,21 @@ const person = z.object({
 </details>
 <br/>
 
-Some disadvantages of this approach, is that it is relatively inaccessible to people not familiar with the TS compiler API, and it is also not very extensible or script-able.
+Some gaps with this approach are:
+* It is also not very extensible or script-able
+* It can result in boiler-plate and repeated code
+* It is relatively inaccessible
+* It has little to no similarity with the zod library
 
-Zod itself is a powerful and extensible library with a very simple, chainable API, and it would be ideal if we could generate zod validators in a similar fashion.
+The `zod` library itself is a powerful and extensible library with a very simple, chainable API, and it would be ideal if we could generate zod validators in a similar fashion.
 
-This project introduces some abstractions on top of the TS compiler API  for simplifying the process of generating Typescript expressions for zod validators. 
+This project introduces abstractions on top of the TS compiler API  for simplifying the process of generating Typescript expressions for zod validators and addresses the above gaps.
 
-Here, the above zod expression can be generated using this library in a number of different ways, as described in the [Usage](#usage) section below.
+With `zod-factory`, the same zod expression can be generated a number of different ways, described in the [Usage](#usage) section below.
 
 
 ## Usage
 
-### API
 The AST node for the zod validator above can be created using this library in 3 different ways:
 
 ### `zf` - zod-factory main
@@ -153,13 +156,13 @@ I hope to turn these playground scripts into stand-alone scripts that can be app
 
 Each of the playground scripts supports the following arguments:
 ```txt
-codegen.ts [options] ...patterns
+codegen.ts [flags] [patterns]
 
 Options:
   patterns             patterns to match files and expressions against. e.g "fileA:.*" "fileB:schema$" "fileC:^expression.*"
+  
+  Flags:
   -d, --directory <dir>  directory to search for files
-  -h, --help             display help for command
-
 ```
 
 ### `codegen.ts`
