@@ -1,7 +1,7 @@
 # zod-factory
-An abstraction of the Typescript Compiler API factory abstractions for creating zod validator expressions.
+An abstraction of the Typescript Compiler API factory for generating zod validator expressions.
 
-## Why?
+## Why zod-factory?
 The Typescript Compiler API is very powerful, and heavily featured to handle a variety of use cases, but it can also be overwhelming to work with directly. 
 
 For example, consider the zod schema below, and the corresponding Typescript compiler factory API code to generate the AST representation of this schema.
@@ -68,11 +68,13 @@ const person = z.object({
 </details>
 <br/>
 
-A big disadvantage of this pattern is that it is not as semantic as the zod schema itself, and is not easily extensible, modifiable or script-able. 
+Some disadvantages of this approach, is that it is relatively inaccessible to people not familiar with the TS compiler API, and it is also not very extensible or script-able.
 
-This project introduces some abstractions on top of the TS compiler API specifically for the purpose of generating AST nodes for zod schemas. 
+Zod itself is a powerful and extensible library with a very simple, chainable API, and it would be ideal if we could generate zod validators in a similar fashion.
 
-Here, the above zod expression can be generated using this library in a number of different ways, as described in the [API](#api) section below.
+This project introduces some abstractions on top of the TS compiler API  for simplifying the process of generating Typescript expressions for zod validators. 
+
+Here, the above zod expression can be generated using this library in a number of different ways, as described in the [Usage](#usage) section below.
 
 
 ## Usage
