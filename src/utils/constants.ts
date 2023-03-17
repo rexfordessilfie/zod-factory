@@ -127,6 +127,12 @@ export const zodStringMembers = {
   trim: "trim",
   datetime: "datetime",
   nonempty: "nonempty",
+  ip: "ip",
+  emoji: "emoji",
+  toLowerCase: "toLowerCase",
+  toUpperCase: "toUpperCase",
+  ulid: "ulid",
+  includes: "includes",
   ...zodSharedMembers,
 } as const satisfies Record<keyof ZodStringMembers, string>;
 
@@ -145,6 +151,7 @@ export const zodNumberMembers = {
   nonpositive: "nonpositive",
   multipleOf: "multipleOf",
   finite: "finite",
+  safe: "safe",
   ...zodSharedMembers,
 } as const satisfies Record<keyof ZodNumberMembers, string>;
 

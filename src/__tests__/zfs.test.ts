@@ -11,6 +11,8 @@ describe("zfs", () => {
   test("should throw when given invalid sub member", () => {
     expect(() =>
       zfs([["string"], ["stringMethodThatDoesNotExist" as any]])
-    ).toThrowError(/unrecognized sub member/i);
+    ).toThrowError(
+      /unrecognized member 'stringMethodThatDoesNotExist' on 'string'/i
+    );
   });
 });

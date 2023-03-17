@@ -5,7 +5,7 @@ import {
   createZodImport,
   writeStatementsToFile,
   zfs,
-  zodSubMemberCreators,
+  zodSharedMemberCreators,
   zodTokens,
 } from "../../dist";
 import { parseArguments } from "./helpers";
@@ -17,67 +17,25 @@ class MissingRefError extends Error {
   }
 }
 
-const schemaTranslations = {
-  pattern: "regex",
-  minLength: "min",
-  maxLength: "max",
-  description: "describe",
-  minimum: "min",
-  maximum: "max",
+const sharedTokens = {
   default: "catch",
-  maxItems: "max",
-  minItems: "min",
-} satisfies Partial<Record<keyof OpenAPIV3.SchemaObject, string>>;
+  description: "describe",
+} satisfies Partial<
+  Record<keyof OpenAPIV3.SchemaObject, keyof typeof zodTokens>
+>;
 
-const schemaTypeTranslations = {
-  integer: "number",
-} satisfies Partial<Record<Required<OpenAPIV3.SchemaObject>["type"], string>>;
-
-const formatTranslations = {
+const stringFormats = {
+  date: "date",
   "date-time": "date",
-};
-
-const stringFormats = [
-  "date",
-  "date-time",
-  "email",
-  "ipv4",
-  "ipv6",
-  "uri",
-  "uuid",
-];
-
-const chainableTokens = [
-  "minimum",
-  "maximum",
-  "maxItems",
-  "minItems",
-  "description",
-  "default",
-] satisfies (keyof OpenAPIV3.BaseSchemaObject)[];
-
-const schemaConfig = {
-  translations: {
-    ...schemaTranslations,
-    ...schemaTypeTranslations,
-    ...formatTranslations,
-  },
-  allowedFormats: [...stringFormats],
-  chainableTokens: [...chainableTokens],
-};
-
-const translateSymbol = (symbol: string) => {
-  return (
-    schemaConfig.translations[
-      symbol as keyof typeof schemaConfig.translations
-    ] || symbol
-  );
-};
-
-const deleteKey = <T, K extends keyof T>(key: K, obj: T): Omit<T, K> => {
-  const { [key]: _, ...rest } = obj;
-  return rest;
-};
+  email: "email",
+  ipv4: "ip",
+  ipv6: "ip",
+  uri: "url",
+  uuid: "uuid",
+  cuid: "cuid",
+  cuid2: "cuid2",
+  ulid: "ulid",
+} satisfies Partial<Record<string, keyof typeof zodTokens>>;
 
 const visitRef = (ref: string) => {
   const name = ref.replace("#/components/schemas/", "");
@@ -105,7 +63,7 @@ const visitObject = (schema: OpenAPIV3.SchemaObject) => {
     const [key, value] = curr;
     const isRequired = required.includes(key);
 
-    const expression = convertSchemaToExpression(value);
+    const expression = convertOpenApiSchemaObjectToZod(value);
 
     if (!expression) {
       console.log(
@@ -133,27 +91,51 @@ const visitObject = (schema: OpenAPIV3.SchemaObject) => {
 const visitArray = (schema: OpenAPIV3.ArraySchemaObject) => {
   const itemsSchema = schema.items;
   const params: any = [];
-  params.push([zodTokens.array, convertSchemaToExpression(itemsSchema)]);
+  params.push([zodTokens.array, convertOpenApiSchemaObjectToZod(itemsSchema)]);
+
+  if (schema.maxItems) {
+    params.push([zodTokens.max, schema.maxItems]);
+  }
+
+  if (schema.minItems) {
+    params.push([zodTokens.min, schema.minItems]);
+  }
+
   return zfs(params);
 };
 
-const visitDefault = (schema: OpenAPIV3.SchemaObject) => {
+const extendSharedParams = (schema: OpenAPIV3.SchemaObject, params: any[]) => {
+  // Add the chained shared methods
+  Object.keys(sharedTokens).forEach((key) => {
+    const token = sharedTokens[key as keyof typeof sharedTokens];
+    const value = (schema as any)[key];
+
+    if (value !== undefined) {
+      params.push([token, value]);
+    }
+  });
+};
+
+const visitString = (schema: OpenAPIV3.SchemaObject) => {
   const params: any = [];
 
-  if (schema.enum) {
-    params.push([zodTokens.enum, schema.enum]);
-  } else {
-    const token = translateSymbol(schema.type!);
-    params.push([token]);
-  }
-
-  if (schema.type === "integer") {
-    params.push([zodTokens.int]);
-  }
+  params.push([zodTokens.string]);
 
   if (schema.format) {
-    if (schemaConfig.allowedFormats.includes(schema.format)) {
-      params.push([schema.format]);
+    const formatToken =
+      stringFormats[schema.format as keyof typeof stringFormats];
+
+    if (formatToken) {
+      switch (schema.format) {
+        case "ipv4":
+          params.push([zodTokens.ip, { version: "v4" }]);
+          break;
+        case "ipv6":
+          params.push([zodTokens.ip, { version: "v6" }]);
+          break;
+        default:
+          params.push([formatToken]);
+      }
     } else {
       console.log(
         `[codegen-openapi] Unsupported format: ${schema.format} for type: ${schema.type}. Skipping...`
@@ -161,16 +143,65 @@ const visitDefault = (schema: OpenAPIV3.SchemaObject) => {
     }
   }
 
-  // Add the chainable tokens
-  Object.entries(schema).forEach(([key, value]) => {
-    if (!schemaConfig.chainableTokens.includes(key as any)) {
-      return;
+  if (schema.pattern) {
+    params.push([zodTokens.regex, schema.pattern]);
+  }
+
+  if (schema.minLength) {
+    params.push([zodTokens.min, schema.minLength]);
+  }
+
+  if (schema.maxLength) {
+    params.push([zodTokens.max, schema.maxLength]);
+  }
+
+  extendSharedParams(schema, params);
+
+  return zfs(params);
+};
+
+const visitEnum = (schema: OpenAPIV3.SchemaObject) => {
+  const params: any = [];
+  params.push([zodTokens.enum, schema.enum]);
+
+  extendSharedParams(schema, params);
+  return zfs(params);
+};
+
+const visitNumber = (schema: OpenAPIV3.SchemaObject) => {
+  const params: any = [];
+
+  params.push([zodTokens.number]);
+
+  if (schema.type === "integer") {
+    params.push([zodTokens.int]);
+  }
+
+  if (schema.minimum) {
+    if (schema.exclusiveMinimum) {
+      params.push([zodTokens.gt, schema.minimum]);
+    } else {
+      params.push([zodTokens.gte, schema.minimum]);
     }
+  }
 
-    const token = translateSymbol(key);
-    params.push([token, value]);
-  });
+  if (schema.maximum) {
+    if (schema.exclusiveMaximum) {
+      params.push([zodTokens.lt, schema.maximum]);
+    } else {
+      params.push([zodTokens.lte, schema.maximum]);
+    }
+  }
 
+  extendSharedParams(schema, params);
+  return zfs(params);
+};
+
+const visitBoolean = (schema: OpenAPIV3.SchemaObject) => {
+  const params: any = [];
+  params.push([zodTokens.boolean]);
+
+  extendSharedParams(schema, params);
   return zfs(params);
 };
 
@@ -180,71 +211,35 @@ const visitOneOf = (schema: OpenAPIV3.SchemaObject) => {
   if (schema.oneOf)
     params.push([
       zodTokens.union,
-      schema.oneOf.map((item) => convertSchemaToExpression(item)),
+      schema.oneOf.map((item) => convertOpenApiSchemaObjectToZod(item)),
     ]);
 
+  extendSharedParams(schema, params);
   return zfs(params);
 };
 
-const visitAllOfUsingIntersection = (schema: OpenAPIV3.SchemaObject) => {
-  let finalExpression: ts.Expression | undefined;
+const visitAllOf = (schema: OpenAPIV3.SchemaObject) => {
+  const expressions = schema.allOf?.map((item) =>
+    convertOpenApiSchemaObjectToZod(item)
+  ) as (ts.Expression & { _zfType: string })[];
 
-  schema.allOf?.forEach((curr) => {
-    const expression = convertSchemaToExpression(curr);
+  if (!expressions) {
+    console.log("[codegen-openapi] Skipping empty allOf...");
+    return;
+  }
 
-    if (!expression) {
-      console.log("[codegen-openapi] Skipping empty allOf...");
-      return;
-    }
+  const [first, ...rest] = expressions.filter((item) => !!item);
 
-    if (!finalExpression) {
-      finalExpression = expression;
-      return;
-    }
+  const expression = rest.reduce((acc, curr) => {
+    return zodSharedMemberCreators.and(acc, curr);
+  }, first);
 
-    finalExpression = zfs([
-      [zodTokens.intersection, finalExpression, expression],
-    ]);
-  });
-
-  return finalExpression;
+  return expression;
 };
 
-const visitAllOfUsingAnd = (schema: OpenAPIV3.SchemaObject) => {
-  let finalExpression: ReturnType<typeof zfs> | ts.Identifier | undefined;
-
-  schema.allOf?.forEach((curr, idx) => {
-    let expression = convertSchemaToExpression(curr);
-
-    if (!expression) {
-      console.log("[codegen-openapi] Skipping empty allOf...");
-      return;
-    }
-
-    if (idx === 0) {
-      finalExpression = expression;
-      return;
-    }
-
-    if (!finalExpression) {
-      return;
-    }
-
-    if ("_zfType" in expression) {
-      const memberMethods = zodSubMemberCreators[expression._zfType];
-      // @ts-ignore
-      finalExpression = memberMethods.and(finalExpression, expression);
-    }
-  });
-
-  return finalExpression;
-};
-
-const convertSchemaToExpression = (
+const convertOpenApiSchemaObjectToZod = (
   schema: Required<OpenAPIV3.ComponentsObject>["schemas"][string]
 ) => {
-  const params: any = [];
-
   if (!schema) {
     throw new Error("No schema");
   }
@@ -258,7 +253,7 @@ const convertSchemaToExpression = (
   }
 
   if (schema.allOf) {
-    return visitAllOfUsingAnd(schema);
+    return visitAllOf(schema);
   }
 
   if ("type" in schema) {
@@ -270,7 +265,23 @@ const convertSchemaToExpression = (
       return visitArray(schema);
     }
 
-    return visitDefault(schema);
+    if (schema.enum) {
+      return visitEnum(schema);
+    }
+
+    if (schema.type === "string") {
+      return visitString(schema);
+    }
+
+    if (schema.type === "number" || schema.type === "integer") {
+      return visitNumber(schema);
+    }
+
+    if (schema.type === "boolean") {
+      return visitBoolean(schema);
+    }
+
+    return zfs([[zodTokens.unknown]]);
   }
 };
 
@@ -309,7 +320,7 @@ for (const schemaDestination of schemaDestinations) {
     }
 
     try {
-      const schemaExpression = convertSchemaToExpression(componentSchema);
+      const schemaExpression = convertOpenApiSchemaObjectToZod(componentSchema);
 
       console.log(
         "[codegen-openapi] Generated schema for:",

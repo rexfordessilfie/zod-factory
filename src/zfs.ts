@@ -24,40 +24,25 @@ export function zodFactorySerial<T extends AllLazyMembers>(
 
     const typeMethodKey = `${acc._zfType}` as const;
 
+    let methods: any;
+
     // If we don't have sub methods defined for this, fall back to the shared methods
-    if (!(typeMethodKey in zf)) {
-      const creator =
-        zodSharedMemberCreators[currMethod as keyof typeof typeMethods];
-
-      if (!creator) {
-        throw new Error(`Unrecognized shared member: ${currMethod}`);
-      }
-
-      //@ts-ignore
-      const result = creator(acc, ...currArgs);
-      return result;
+    if (zodSubMemberCreators[typeMethodKey]) {
+      methods = zodSubMemberCreators[typeMethodKey];
+    } else {
+      methods = zodSharedMemberCreators;
     }
 
-    const typeMethods = zodSubMemberCreators[typeMethodKey];
+    const creator = methods[currMethod as keyof typeof methods];
 
-    if (!typeMethods) {
+    if (!creator) {
       throw new Error(
-        `Missing sub methods for _zfType: ${acc._zfType} on member: ${currMethod}}`
+        `Unrecognized member '${currMethod}' on '${acc._zfType}'`
       );
     }
 
-    if (!(currMethod in typeMethods)) {
-      throw new Error(`Unrecognized sub member: ${currMethod}`);
-    }
-
-    const creator = typeMethods[currMethod as keyof typeof typeMethods];
-
-    if (!creator) {
-      throw new Error(`Unrecognized sub member: ${currMethod}`);
-    }
-
     //@ts-ignore
-    const result = creator(acc, ...currArgs);
+    const result = creator(acc, ...(currArgs || []));
     return result;
   }, initialExpression as ts.Expression & { _zfType: keyof typeof zodSubMemberCreators });
 }
