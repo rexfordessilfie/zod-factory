@@ -1,6 +1,6 @@
 {
   "name": "zod-factory",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Typescript compiler API factory abstractions for creating zod validation schemas.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
