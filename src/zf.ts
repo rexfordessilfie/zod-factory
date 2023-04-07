@@ -1,108 +1,90 @@
+import { zodDirectMembers } from "./utils";
+import { _array, arrayMemberCreators } from "./core/array";
+import { _boolean } from "./core/boolean";
+import { _coerce, coerceMemberCreators } from "./core/coerce";
+import { _number, numberMemberCreators } from "./core/number";
+import { _object, objectMemberCreators } from "./core/object";
+import { _string, stringMemberCreators } from "./core/string";
+import { _set, setMemberCreators } from "./core/set";
 import {
-  callExpressionCreatorWithPreviousType,
-  callExpressionCreatorWithTarget,
-  propertyAccessExpressionCreatorWithTarget,
-  zodIdentifier,
-} from "./utils/ast";
-import { zodDirectMembers, zodTokens } from "./utils/constants";
-import { arrayMemberCreators } from "./core/array";
-import { booleanMemberCreators } from "./core/boolean";
-import { coerceMemberCreators } from "./core/coerce";
-import { numberMemberCreators } from "./core/number";
-import { objectMemberCreators } from "./core/object";
-import { stringMemberCreators } from "./core/string";
-import { setMemberCreators } from "./core/set";
-
-export const zodDirectMemberCreators = {
-  union: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.union),
-  enum: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.enum),
-  literal: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.literal),
-  string: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.string),
-  number: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.number),
-  boolean: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.boolean),
-  promise: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.promise),
-  object: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.object),
-  optional: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.optional),
-  array: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.array),
-  coerce: propertyAccessExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.coerce
-  ),
-  any: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.any),
-  unknown: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.unknown),
-  bigint: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.bigint),
-  date: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.date),
-  function: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.function),
-  null: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.null),
-  undefined: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.undefined
-  ),
-  never: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.never),
-  void: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.void),
-  nullable: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.nullable),
-  custom: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.custom),
-  map: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.map),
-  set: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.set),
-  record: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.record),
-  tuple: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.tuple),
-  intersection: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.intersection
-  ),
-  nan: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.nan),
-  oboolean: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.oboolean),
-  discriminatedUnion: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.discriminatedUnion
-  ),
-  instanceof: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.instanceof
-  ),
-  onumber: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.onumber),
-  ostring: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.ostring),
-  nativeEnum: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.nativeEnum
-  ),
-  lazy: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.lazy),
-  transformer: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.transformer
-  ),
-
-  effect: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.effect),
-  pipeline: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.pipeline),
-  preprocess: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.preprocess
-  ),
-  symbol: callExpressionCreatorWithTarget(zodIdentifier, zodTokens.symbol),
-  strictObject: callExpressionCreatorWithTarget(
-    zodIdentifier,
-    zodTokens.strictObject
-  ),
-} as const satisfies Partial<Record<keyof typeof zodDirectMembers, any>>;
-
-export const zodSubMemberCreators = {
-  object: objectMemberCreators,
-  string: stringMemberCreators,
-  number: numberMemberCreators,
-  coerce: coerceMemberCreators,
-  array: arrayMemberCreators,
-  set: setMemberCreators,
-  boolean: booleanMemberCreators,
-} as const satisfies Partial<Record<keyof typeof zodDirectMembers, any>>;
+  _any,
+  _bigint,
+  _custom,
+  _date,
+  _discriminatedUnion,
+  _effect,
+  _enum,
+  _function,
+  _instanceOf,
+  _intersection,
+  _lazy,
+  _literal,
+  _map,
+  _nan,
+  _nativeEnum,
+  _never,
+  _null,
+  _nullable,
+  _oboolean,
+  _onumber,
+  _optional,
+  _ostring,
+  _pipeline,
+  _preprocess,
+  _promise,
+  _record,
+  _strictObject,
+  _symbol,
+  _transformer,
+  _tuple,
+  _undefined,
+  _union,
+  _unknown,
+  _void
+} from "./core/others";
 
 export const zodFactory = {
-  ...zodDirectMemberCreators,
-  objectMethods: zodSubMemberCreators.object,
-  stringMethods: zodSubMemberCreators.string,
-  numberMethods: zodSubMemberCreators.number,
-  coerceMethods: zodSubMemberCreators.coerce,
-  arrayMethods: zodSubMemberCreators.array,
-  setMethods: zodSubMemberCreators.set,
-} as const;
+  string: _string,
+  number: _number,
+  boolean: _boolean,
+  object: _object,
+  array: _array,
+  coerce: _coerce,
+  set: _set,
+  union: _union,
+  enum: _enum,
+  literal: _literal,
+  promise: _promise,
+  optional: _optional,
+  any: _any,
+  unknown: _unknown,
+  bigint: _bigint,
+  date: _date,
+  function: _function,
+  null: _null,
+  undefined: _undefined,
+  never: _never,
+  void: _void,
+  nullable: _nullable,
+  custom: _custom,
+  map: _map,
+  record: _record,
+  tuple: _tuple,
+  intersection: _intersection,
+  nan: _nan,
+  oboolean: _oboolean,
+  discriminatedUnion: _discriminatedUnion,
+  instanceof: _instanceOf,
+  onumber: _onumber,
+  ostring: _ostring,
+  nativeEnum: _nativeEnum,
+  lazy: _lazy,
+  transformer: _transformer,
+  effect: _effect,
+  pipeline: _pipeline,
+  preprocess: _preprocess,
+  symbol: _symbol,
+  strictObject: _strictObject
+} as const satisfies Partial<Record<keyof typeof zodDirectMembers, any>>;
 
 export { zodFactory as zf };

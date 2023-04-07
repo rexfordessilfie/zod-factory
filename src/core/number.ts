@@ -1,15 +1,11 @@
-import { zodTokens, zodNumberMembers } from "../utils";
 import {
+  zodTokens,
+  zodNumberMembers,
   callExpressionCreatorWithFactoryType,
   callExpressionCreatorWithTarget,
-  zodIdentifier,
-} from "../utils/ast";
+  zodIdentifier
+} from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
-
-export const createZodNumber = callExpressionCreatorWithTarget(
-  zodIdentifier,
-  zodTokens.number
-);
 
 export const numberMemberCreators = {
   min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.number),
@@ -38,6 +34,17 @@ export const numberMemberCreators = {
   finite: callExpressionCreatorWithFactoryType(
     zodTokens.finite,
     zodTokens.number
-  ),
-  ...buildSharedZodMemberCreators(zodTokens.number),
+  )
 } as const satisfies Partial<Record<keyof typeof zodNumberMembers, any>>;
+
+export const createZodNumber = callExpressionCreatorWithTarget(
+  zodIdentifier,
+  zodTokens.number
+);
+
+export const _number = Object.assign(createZodNumber, {
+  t: Object.assign(
+    numberMemberCreators,
+    buildSharedZodMemberCreators(zodTokens.number)
+  )
+});
