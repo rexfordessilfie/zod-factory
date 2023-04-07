@@ -70,7 +70,7 @@ const person = z.object({
 
 Some gaps with this approach are:
 * It is also not very extensible or script-able
-* It can result in boiler-plate and repeated code
+* It can result in boilerplate and repeated code
 * It is relatively inaccessible
 * It has little to no similarity with the zod library
 
@@ -92,7 +92,7 @@ This exposes helper methods for generating the corresponding AST nodes that map 
 import { printNode } from 'zod-factory'
 const schema = zf.object({
   name: zf.string(),
-  age: zf.numberMethods.min(zf.number(), 18),
+  age: zf.number.t.min(zf.number(), 18),
 });
 
 const result = printNode(schema); // result: z.object({ name: z.string(), age: z.number().min(18) })
@@ -100,7 +100,7 @@ const result = printNode(schema); // result: z.object({ name: z.string(), age: z
 
 Here, methods that can be accessed directly on the `zod` object can also be accessed directly on the `zf` object to generate their AST node equivalent.
 
-Methods that are accessed not-directly on zod (e.g `min`, `max`, `email` etc.) are accessibly on an `xyzMethods` key, where `xyz` is the name of the zod property they are accessible on. This could be subject to change if there is a better experience for this.
+Methods that are accessed indirectly from `z` (e.g `min`, `max`, `email` etc.) are accessibly on a `.t` key, of the name of the direct zod property. This could be subject to change if there is a better experience for this.
 
 ### `zfs` - zod-factory 'serialized'
 This API builds on top of the core, and accepts more 'serial' arguments:
@@ -238,7 +238,7 @@ export const person = z.object({
   name: z.string({
       required_error: "Name is required",
       invalid_type_error: "Name is invalid",
-    })
+    }),
   age: z.number(),
   emails: z.array(z.string().email()),
 });
@@ -259,7 +259,6 @@ For OpenApi schemas, references are resolved by replacing them with the name of 
 
 ```json
 {
-  ...,
   "components": {
     "schemas": {
       "Emoji": {
@@ -293,8 +292,7 @@ For OpenApi schemas, references are resolved by replacing them with the name of 
         }
       }  
     }
-  },
-  ...
+  }
 }
 ```
 
