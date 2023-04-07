@@ -1,13 +1,13 @@
-import { zodTokens, zodArrayMembers, zodSetMembers } from "../utils";
 import {
+  zodTokens,
+  zodSetMembers,
   zodIdentifier,
   callExpressionCreatorWithTarget,
-  callExpressionCreatorWithFactoryType,
-  callExpressionCreatorWithPreviousType,
-} from "../utils/ast";
+  callExpressionCreatorWithFactoryType
+} from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
-export const createZodArray = callExpressionCreatorWithTarget(
+export const createZodSet = callExpressionCreatorWithTarget(
   zodIdentifier,
   zodTokens.set
 );
@@ -19,6 +19,12 @@ export const setMemberCreators = {
   nonempty: callExpressionCreatorWithFactoryType(
     zodTokens.nonempty,
     zodTokens.set
-  ),
-  ...buildSharedZodMemberCreators(zodTokens.set),
+  )
 } as const satisfies Partial<Record<keyof typeof zodSetMembers, any>>;
+
+export const _set = Object.assign(createZodSet, {
+  t: Object.assign(
+    setMemberCreators,
+    buildSharedZodMemberCreators(zodTokens.set)
+  )
+});

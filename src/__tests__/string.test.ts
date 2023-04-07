@@ -1,13 +1,13 @@
 import { zf, printNode } from "..";
 
 const baseExp = zf.string({ required_message: "required" });
-const minFiveExp = zf.stringMethods.min(zf.string(), 5, "min5");
-const maxTenExp = zf.stringMethods.max(zf.string(), 10, "max10");
-const nonemptyExp = zf.stringMethods.nonempty(zf.string());
-const startsWithExp = zf.stringMethods.startsWith(zf.string(), "startsWith");
-const endsWithExp = zf.stringMethods.endsWith(zf.string(), "endsWith");
-const emailExp = zf.stringMethods.email(zf.string());
-const uuidExp = zf.stringMethods.uuid(zf.string());
+const minFiveExp = zf.string.t.min(zf.string(), 5, "min5");
+const maxTenExp = zf.string.t.max(zf.string(), 10, "max10");
+const nonemptyExp = zf.string.t.nonempty(zf.string());
+const startsWithExp = zf.string.t.startsWith(zf.string(), "startsWith");
+const endsWithExp = zf.string.t.endsWith(zf.string(), "endsWith");
+const emailExp = zf.string.t.email(zf.string());
+const uuidExp = zf.string.t.uuid(zf.string());
 
 // Source: https://github.com/colinhacks/zod/blob/master/src/__tests__/string.test.ts
 const baseSchema = printNode(baseExp);

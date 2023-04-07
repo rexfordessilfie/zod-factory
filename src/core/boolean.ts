@@ -1,5 +1,8 @@
-import { zodTokens, zodBooleanMembers } from "../utils";
-import { callExpressionCreatorWithTarget, zodIdentifier } from "../utils/ast";
+import {
+  zodTokens,
+  callExpressionCreatorWithTarget,
+  zodIdentifier
+} from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
 export const createZodBoolean = callExpressionCreatorWithTarget(
@@ -7,6 +10,6 @@ export const createZodBoolean = callExpressionCreatorWithTarget(
   zodTokens.boolean
 );
 
-export const booleanMemberCreators = {
-  ...buildSharedZodMemberCreators(zodTokens.boolean),
-} as const satisfies Partial<Record<keyof typeof zodBooleanMembers, any>>;
+export const _boolean = Object.assign(createZodBoolean, {
+  t: buildSharedZodMemberCreators(zodTokens.boolean)
+});

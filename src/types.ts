@@ -1,13 +1,13 @@
-import { zodSubMemberCreators, zodDirectMemberCreators } from "./zf";
+import { zf } from "./zf";
 
-export type LazyTypeMembersByType = {
-  [K in keyof typeof zodSubMemberCreators]: keyof (typeof zodSubMemberCreators)[K];
-};
+// Source: https://time-is-life.fun/typescript-extracting-keys-of-union-type-keyof-uniontype/
+export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
-export type LazyTypeMembersFlat =
-  LazyTypeMembersByType[keyof LazyTypeMembersByType];
+export type LazyTypeMembersFlat = KeysOfUnion<
+  (typeof zf)[keyof typeof zf]["t"]
+>;
 
-export type LazyDirectMemberNames = keyof typeof zodDirectMemberCreators;
+export type LazyDirectMemberNames = keyof typeof zf;
 
 export type AllLazyMembers = LazyDirectMemberNames | LazyTypeMembersFlat;
 

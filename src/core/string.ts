@@ -1,15 +1,11 @@
-import { zodStringMembers, zodTokens } from "../utils";
 import {
+  zodStringMembers,
+  zodTokens,
   zodIdentifier,
   callExpressionCreatorWithTarget,
-  callExpressionCreatorWithFactoryType,
-} from "../utils/ast";
+  callExpressionCreatorWithFactoryType
+} from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
-
-export const createZodString = callExpressionCreatorWithTarget(
-  zodIdentifier,
-  zodTokens.string
-);
 
 export const stringMemberCreators = {
   min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.string),
@@ -44,9 +40,17 @@ export const stringMemberCreators = {
   trim: callExpressionCreatorWithFactoryType(zodTokens.trim, zodTokens.string),
   ip: callExpressionCreatorWithFactoryType(zodTokens.ip, zodTokens.string),
   ulid: callExpressionCreatorWithFactoryType(zodTokens.ulid, zodTokens.string),
-  emoji: callExpressionCreatorWithFactoryType(
-    zodTokens.emoji,
-    zodTokens.string
-  ),
-  ...buildSharedZodMemberCreators(zodTokens.string),
+  emoji: callExpressionCreatorWithFactoryType(zodTokens.emoji, zodTokens.string)
 } as const satisfies Partial<Record<keyof typeof zodStringMembers, any>>;
+
+export const createZodString = callExpressionCreatorWithTarget(
+  zodIdentifier,
+  zodTokens.string
+);
+
+export const _string = Object.assign(createZodString, {
+  t: Object.assign(
+    stringMemberCreators,
+    buildSharedZodMemberCreators(zodTokens.string)
+  )
+});
