@@ -3,3 +3,4 @@ dist
 scratch.ts
 *.scratch.ts
 coverage
+.idea
