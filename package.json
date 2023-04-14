@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "build": "npm run clean; tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
-    "prepublishOnly": "rm -rf dist; npm run test; npm run build",
+    "prepublishOnly": "npm run test; npm run build",
     "test": "jest --coverage"
   },
   "keywords": [
