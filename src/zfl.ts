@@ -1,7 +1,7 @@
 import { zodTokens } from "./utils";
 import { zfs } from "./zfs";
 import { AllLazyMembers } from "./types";
-import { zf } from "./zf";
+import * as core from "./core/external";
 
 function createLazyMember<T extends AllLazyMembers>(token: T, soFar: any[]) {
   const zodTokenKeys = Object.keys(zodTokens) as AllLazyMembers[];
@@ -26,10 +26,10 @@ type LazyResult<T extends string = string> = {
   create: () => ReturnType<typeof zfs>;
 } & Record<AllLazyMembers, (...args: any[]) => LazyResult>;
 
-export function zodFactoryLazy() {
+export function zfl() {
   const params: any[] = [];
 
-  const zodDirectKeys = Object.keys(zf) as (keyof typeof zf)[];
+  const zodDirectKeys = Object.keys(core) as (keyof typeof core)[];
   return zodDirectKeys.reduce((acc, name) => {
     return {
       ...acc,
@@ -37,5 +37,3 @@ export function zodFactoryLazy() {
     };
   }, {} as Record<(typeof zodDirectKeys)[number], ReturnType<typeof createLazyMember>>);
 }
-
-export { zodFactoryLazy as zfl };

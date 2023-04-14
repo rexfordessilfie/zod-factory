@@ -2,7 +2,7 @@ import { zodTokens, zodZ, zodZod } from ".";
 
 import ts, { factory } from "typescript";
 
-export const createZodImport = () => {
+export const zodImport = () => {
   return factory.createImportDeclaration(
     undefined,
     factory.createImportClause(
@@ -13,7 +13,7 @@ export const createZodImport = () => {
           false,
           undefined,
           factory.createIdentifier(zodZ)
-        ),
+        )
       ])
     ),
     factory.createStringLiteral(zodZod),
@@ -21,22 +21,20 @@ export const createZodImport = () => {
   );
 };
 
-export const createZodIdentifier = () => {
+export const zodIdentifier = () => {
   return extendExpressionWithFactoryType(factory.createIdentifier(zodZ), zodZ);
 };
 
-export const extendExpressionWithFactoryType = <E extends ts.Expression, T>(
+const extendExpressionWithFactoryType = <E extends ts.Expression, T>(
   target: E,
   type: T
 ) => {
   return Object.assign(target, {
-    _zfType: type,
+    _zfType: type
   });
 };
 
-export const zodIdentifier = createZodIdentifier();
-
-export const createSchemaExport = (name: string, value: ts.Expression) => {
+export const schemaExport = (name: string, value: ts.Expression) => {
   return factory.createVariableStatement(
     [factory.createToken(ts.SyntaxKind.ExportKeyword)],
     factory.createVariableDeclarationList(
@@ -46,7 +44,7 @@ export const createSchemaExport = (name: string, value: ts.Expression) => {
           undefined,
           undefined,
           value
-        ),
+        )
       ],
       ts.NodeFlags.Const
     )
@@ -134,18 +132,6 @@ export const createPropertyAccessCall = (
   );
 };
 
-export const extendExpressionWithArgs = <
-  E extends ts.Expression,
-  Args extends any[] = any[]
->(
-  target: E,
-  args: Args
-) => {
-  return Object.assign(target, {
-    _zfArgs: args,
-  });
-};
-
 export type ValueOf<T extends Record<string, any>> = T[keyof T];
 
 export const callExpressionCreatorWithTarget =
@@ -155,10 +141,7 @@ export const callExpressionCreatorWithTarget =
   ) =>
   <Args extends any[] = any[]>(...args: Args) => {
     const expression = createPropertyAccessCall(target, name, args);
-    return extendExpressionWithArgs(
-      extendExpressionWithFactoryType(expression, name),
-      args
-    );
+    return extendExpressionWithFactoryType(expression, name);
   };
 
 export const propertyAccessExpressionCreatorWithTarget =
@@ -168,20 +151,14 @@ export const propertyAccessExpressionCreatorWithTarget =
   ) =>
   <Args extends any[] = any[]>(...args: Args) => {
     const expression = createPropertyAccess(target, name);
-    return extendExpressionWithArgs(
-      extendExpressionWithFactoryType(expression, name),
-      args
-    );
+    return extendExpressionWithFactoryType(expression, name);
   };
 
 export const callExpressionCreator =
   <T1 extends ValueOf<typeof zodTokens>>(name: T1) =>
   <Args extends any[] = any[]>(target: ts.Expression, ...args: Args) => {
     const expression = createPropertyAccessCall(target, name, args);
-    return extendExpressionWithArgs(
-      extendExpressionWithFactoryType(expression, name),
-      args
-    );
+    return extendExpressionWithFactoryType(expression, name);
   };
 
 export const callExpressionCreatorWithFactoryType =

@@ -8,7 +8,7 @@ import {
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
-export const arrayMemberCreators = {
+const arrayMemberCreators = {
   min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.array),
   max: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.array),
   length: callExpressionCreatorWithFactoryType(
@@ -22,12 +22,12 @@ export const arrayMemberCreators = {
   )
 } as const satisfies Partial<Record<keyof typeof zodArrayMembers, any>>;
 
-export const createZodArray = callExpressionCreatorWithTarget(
-  zodIdentifier,
+const createZodArray = callExpressionCreatorWithTarget(
+  zodIdentifier(),
   zodTokens.array
 );
 
-export const _array = Object.assign(createZodArray, {
+export const array = Object.assign(createZodArray, {
   t: Object.assign(
     arrayMemberCreators,
     buildSharedZodMemberCreators(zodTokens.array)

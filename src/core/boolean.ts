@@ -5,11 +5,11 @@ import {
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
-export const createZodBoolean = callExpressionCreatorWithTarget(
-  zodIdentifier,
+const createZodBoolean = callExpressionCreatorWithTarget(
+  zodIdentifier(),
   zodTokens.boolean
 );
 
-export const _boolean = Object.assign(createZodBoolean, {
+export const boolean = Object.assign(createZodBoolean, {
   t: buildSharedZodMemberCreators(zodTokens.boolean)
 });

@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { convertToExpression, printNode, zfs } from "..";
+import { convertToExpression, printNode } from "../utils";
 
 describe("convertToExpression", () => {
   test("should maintain undefined expressions", () => {
@@ -27,7 +27,7 @@ describe("convertToExpression", () => {
       1,
       "2",
       null,
-      undefined,
+      undefined
     ]);
     expect(printNode(arrayLiteralExpression)).toBe('[1, "2", null, undefined]');
   });
@@ -37,7 +37,7 @@ describe("convertToExpression", () => {
       foo: 1,
       bar: "2",
       baz: null,
-      qux: undefined,
+      qux: undefined
     });
 
     expect(printNode(objectLiteralExpression)).toBe(
@@ -104,9 +104,9 @@ describe("convertToExpression", () => {
       bar: {
         baz: 2,
         qux: {
-          quux: 3,
-        },
-      },
+          quux: 3
+        }
+      }
     });
 
     expect(printNode(nestedObjectLiteralExpression)).toBe(
