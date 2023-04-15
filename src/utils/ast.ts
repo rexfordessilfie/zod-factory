@@ -1,6 +1,7 @@
-import { zodTokens, zodZ, zodZod } from ".";
+import { zodZ, zodZod } from ".";
 
 import ts, { factory } from "typescript";
+import { ZodToken } from "./types";
 
 export const zodImport = () => {
   return factory.createImportDeclaration(
@@ -132,30 +133,22 @@ export const createPropertyAccessCall = (
   );
 };
 
-export type ValueOf<T extends Record<string, any>> = T[keyof T];
-
 export const callExpressionCreatorWithTarget =
-  <T1 extends ValueOf<typeof zodTokens>, E extends ts.Expression>(
-    target: E,
-    name: T1
-  ) =>
+  <T1 extends ZodToken, E extends ts.Expression>(target: E, name: T1) =>
   <Args extends any[] = any[]>(...args: Args) => {
     const expression = createPropertyAccessCall(target, name, args);
     return extendExpressionWithFactoryType(expression, name);
   };
 
 export const propertyAccessExpressionCreatorWithTarget =
-  <T1 extends ValueOf<typeof zodTokens>, E extends ts.Expression>(
-    target: E,
-    name: T1
-  ) =>
+  <T1 extends ZodToken, E extends ts.Expression>(target: E, name: T1) =>
   <Args extends any[] = any[]>(...args: Args) => {
     const expression = createPropertyAccess(target, name);
     return extendExpressionWithFactoryType(expression, name);
   };
 
 export const callExpressionCreator =
-  <T1 extends ValueOf<typeof zodTokens>>(name: T1) =>
+  <T1 extends ZodToken>(name: T1) =>
   <Args extends any[] = any[]>(target: ts.Expression, ...args: Args) => {
     const expression = createPropertyAccessCall(target, name, args);
     return extendExpressionWithFactoryType(expression, name);
@@ -163,8 +156,8 @@ export const callExpressionCreator =
 
 export const callExpressionCreatorWithFactoryType =
   <
-    T1 extends ValueOf<typeof zodTokens>,
-    T2 extends ValueOf<typeof zodTokens>,
+    T1 extends ZodToken,
+    T2 extends ZodToken,
     E extends ts.Expression & { _zfType: T2 }
   >(
     name: T1,
@@ -177,10 +170,7 @@ export const callExpressionCreatorWithFactoryType =
   };
 
 export const callExpressionCreatorWithPreviousType =
-  <
-    T1 extends ValueOf<typeof zodTokens>,
-    E extends ts.Expression & { _zfType: ValueOf<typeof zodTokens> }
-  >(
+  <T1 extends ZodToken, E extends ts.Expression & { _zfType: ZodToken }>(
     name: T1
   ) =>
   <Args extends any[] = any[]>(target: E, ...args: Args) => {
