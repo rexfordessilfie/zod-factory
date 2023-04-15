@@ -10,7 +10,7 @@ const createZodUnion = callExpressionCreatorWithTarget(
   zodTokens.union
 );
 export const union = Object.assign(createZodUnion, {
-  t: buildSharedZodMemberCreators(zodTokens.union)
+  of: buildSharedZodMemberCreators(zodTokens.union)
 });
 
 const createZodEnum = callExpressionCreatorWithTarget(
@@ -19,7 +19,7 @@ const createZodEnum = callExpressionCreatorWithTarget(
 );
 
 const enum_ = Object.assign(createZodEnum, {
-  t: buildSharedZodMemberCreators(zodTokens.enum)
+  of: buildSharedZodMemberCreators(zodTokens.enum)
 });
 
 export { enum_ as enum };
@@ -30,7 +30,7 @@ const createZodLiteral = callExpressionCreatorWithTarget(
 );
 
 export const literal = Object.assign(createZodLiteral, {
-  t: buildSharedZodMemberCreators(zodTokens.literal)
+  of: buildSharedZodMemberCreators(zodTokens.literal)
 });
 
 const createZodPromise = callExpressionCreatorWithTarget(
@@ -39,7 +39,7 @@ const createZodPromise = callExpressionCreatorWithTarget(
 );
 
 export const promise = Object.assign(createZodPromise, {
-  t: buildSharedZodMemberCreators(zodTokens.promise)
+  of: buildSharedZodMemberCreators(zodTokens.promise)
 });
 
 const createZodOptional = callExpressionCreatorWithTarget(
@@ -48,7 +48,7 @@ const createZodOptional = callExpressionCreatorWithTarget(
 );
 
 export const optional = Object.assign(createZodOptional, {
-  t: buildSharedZodMemberCreators(zodTokens.optional)
+  of: buildSharedZodMemberCreators(zodTokens.optional)
 });
 
 const createZodAny = callExpressionCreatorWithTarget(
@@ -56,7 +56,7 @@ const createZodAny = callExpressionCreatorWithTarget(
   zodTokens.any
 );
 const any_ = Object.assign(createZodAny, {
-  t: buildSharedZodMemberCreators(zodTokens.any)
+  of: buildSharedZodMemberCreators(zodTokens.any)
 });
 
 export { any_ as any };
@@ -67,7 +67,7 @@ const createZodUnknown = callExpressionCreatorWithTarget(
 );
 
 const unknown_ = Object.assign(createZodUnknown, {
-  t: buildSharedZodMemberCreators(zodTokens.unknown)
+  of: buildSharedZodMemberCreators(zodTokens.unknown)
 });
 
 export { unknown_ as unknown };
@@ -78,7 +78,7 @@ const createZodBigint = callExpressionCreatorWithTarget(
 );
 
 const bigint_ = Object.assign(createZodBigint, {
-  t: buildSharedZodMemberCreators(zodTokens.bigint)
+  of: buildSharedZodMemberCreators(zodTokens.bigint)
 });
 
 export { bigint_ as bigint };
@@ -87,8 +87,9 @@ const createZodDate = callExpressionCreatorWithTarget(
   zodIdentifier(),
   zodTokens.date
 );
-const date = Object.assign(createZodDate, {
-  t: buildSharedZodMemberCreators(zodTokens.date)
+
+export const date = Object.assign(createZodDate, {
+  of: buildSharedZodMemberCreators(zodTokens.date)
 });
 
 const createZodFunction = callExpressionCreatorWithTarget(
@@ -97,7 +98,7 @@ const createZodFunction = callExpressionCreatorWithTarget(
 );
 
 const function_ = Object.assign(createZodFunction, {
-  t: buildSharedZodMemberCreators(zodTokens.function)
+  of: buildSharedZodMemberCreators(zodTokens.function)
 });
 
 export { function_ as function };
@@ -108,7 +109,7 @@ const createZodNull = callExpressionCreatorWithTarget(
 );
 
 const null_ = Object.assign(createZodNull, {
-  t: buildSharedZodMemberCreators(zodTokens.null)
+  of: buildSharedZodMemberCreators(zodTokens.null)
 });
 
 export { null_ as null };
@@ -119,7 +120,7 @@ const createZodUndefined = callExpressionCreatorWithTarget(
 );
 
 const undefined_ = Object.assign(createZodUndefined, {
-  t: buildSharedZodMemberCreators(zodTokens.undefined)
+  of: buildSharedZodMemberCreators(zodTokens.undefined)
 });
 
 export { undefined_ as undefined };
@@ -128,8 +129,9 @@ const createZodNever = callExpressionCreatorWithTarget(
   zodIdentifier(),
   zodTokens.never
 );
+
 const never_ = Object.assign(createZodNever, {
-  t: buildSharedZodMemberCreators(zodTokens.never)
+  of: buildSharedZodMemberCreators(zodTokens.never)
 });
 export { never_ as never };
 
@@ -139,7 +141,7 @@ const createZodVoid = callExpressionCreatorWithTarget(
 );
 
 const void_ = Object.assign(createZodVoid, {
-  t: buildSharedZodMemberCreators(zodTokens.void)
+  of: buildSharedZodMemberCreators(zodTokens.void)
 });
 export { void_ as void };
 
@@ -149,7 +151,7 @@ const createZodNullable = callExpressionCreatorWithTarget(
 );
 
 export const nullable = Object.assign(createZodNullable, {
-  t: buildSharedZodMemberCreators(zodTokens.nullable)
+  of: buildSharedZodMemberCreators(zodTokens.nullable)
 });
 
 const createZodCustom = callExpressionCreatorWithTarget(
@@ -158,7 +160,7 @@ const createZodCustom = callExpressionCreatorWithTarget(
 );
 
 export const custom = Object.assign(createZodCustom, {
-  t: buildSharedZodMemberCreators(zodTokens.custom)
+  of: buildSharedZodMemberCreators(zodTokens.custom)
 });
 
 const createZodMap = callExpressionCreatorWithTarget(
@@ -166,7 +168,7 @@ const createZodMap = callExpressionCreatorWithTarget(
   zodTokens.map
 );
 export const map = Object.assign(createZodMap, {
-  t: buildSharedZodMemberCreators(zodTokens.map)
+  of: buildSharedZodMemberCreators(zodTokens.map)
 });
 
 const createZodRecord = callExpressionCreatorWithTarget(
@@ -174,7 +176,7 @@ const createZodRecord = callExpressionCreatorWithTarget(
   zodTokens.record
 );
 export const record = Object.assign(createZodRecord, {
-  t: buildSharedZodMemberCreators(zodTokens.record)
+  of: buildSharedZodMemberCreators(zodTokens.record)
 });
 
 const createZodTuple = callExpressionCreatorWithTarget(
@@ -182,7 +184,7 @@ const createZodTuple = callExpressionCreatorWithTarget(
   zodTokens.tuple
 );
 export const tuple = Object.assign(createZodTuple, {
-  t: buildSharedZodMemberCreators(zodTokens.tuple)
+  of: buildSharedZodMemberCreators(zodTokens.tuple)
 });
 
 const createZodIntersection = callExpressionCreatorWithTarget(
@@ -191,7 +193,7 @@ const createZodIntersection = callExpressionCreatorWithTarget(
 );
 
 export const intersection = Object.assign(createZodIntersection, {
-  t: buildSharedZodMemberCreators(zodTokens.intersection)
+  of: buildSharedZodMemberCreators(zodTokens.intersection)
 });
 
 const createZodNan = callExpressionCreatorWithTarget(
@@ -199,14 +201,14 @@ const createZodNan = callExpressionCreatorWithTarget(
   zodTokens.nan
 );
 export const nan = Object.assign(createZodNan, {
-  t: buildSharedZodMemberCreators(zodTokens.nan)
+  of: buildSharedZodMemberCreators(zodTokens.nan)
 });
 const createZodOboolean = callExpressionCreatorWithTarget(
   zodIdentifier(),
   zodTokens.oboolean
 );
 export const oboolean = Object.assign(createZodOboolean, {
-  t: buildSharedZodMemberCreators(zodTokens.oboolean)
+  of: buildSharedZodMemberCreators(zodTokens.oboolean)
 });
 
 const createZodDiscriminatedUnion = callExpressionCreatorWithTarget(
@@ -215,23 +217,25 @@ const createZodDiscriminatedUnion = callExpressionCreatorWithTarget(
 );
 
 export const discriminatedUnion = Object.assign(createZodDiscriminatedUnion, {
-  t: buildSharedZodMemberCreators(zodTokens.discriminatedUnion)
+  of: buildSharedZodMemberCreators(zodTokens.discriminatedUnion)
 });
 
 const createZodInstanceOf = callExpressionCreatorWithTarget(
   zodIdentifier(),
   zodTokens.instanceof
 );
-export const instanceOf = Object.assign(createZodInstanceOf, {
-  t: buildSharedZodMemberCreators(zodTokens.instanceof)
+const instanceof_ = Object.assign(createZodInstanceOf, {
+  of: buildSharedZodMemberCreators(zodTokens.instanceof)
 });
+
+export { instanceof_ as instanceof }
 
 const createZodOnumber = callExpressionCreatorWithTarget(
   zodIdentifier(),
   zodTokens.onumber
 );
 export const onumber = Object.assign(createZodOnumber, {
-  t: buildSharedZodMemberCreators(zodTokens.onumber)
+  of: buildSharedZodMemberCreators(zodTokens.onumber)
 });
 
 const createZodOstring = callExpressionCreatorWithTarget(
@@ -239,7 +243,7 @@ const createZodOstring = callExpressionCreatorWithTarget(
   zodTokens.ostring
 );
 export const ostring = Object.assign(createZodOstring, {
-  t: buildSharedZodMemberCreators(zodTokens.ostring)
+  of: buildSharedZodMemberCreators(zodTokens.ostring)
 });
 
 const createZodNativeEnum = callExpressionCreatorWithTarget(
@@ -247,7 +251,7 @@ const createZodNativeEnum = callExpressionCreatorWithTarget(
   zodTokens.nativeEnum
 );
 export const nativeEnum = Object.assign(createZodNativeEnum, {
-  t: buildSharedZodMemberCreators(zodTokens.nativeEnum)
+  of: buildSharedZodMemberCreators(zodTokens.nativeEnum)
 });
 
 const createZodLazy = callExpressionCreatorWithTarget(
@@ -255,14 +259,14 @@ const createZodLazy = callExpressionCreatorWithTarget(
   zodTokens.lazy
 );
 export const lazy = Object.assign(createZodLazy, {
-  t: buildSharedZodMemberCreators(zodTokens.lazy)
+  of: buildSharedZodMemberCreators(zodTokens.lazy)
 });
 const createZodTransformer = callExpressionCreatorWithTarget(
   zodIdentifier(),
   zodTokens.transformer
 );
 export const transformer = Object.assign(createZodTransformer, {
-  t: buildSharedZodMemberCreators(zodTokens.transformer)
+  of: buildSharedZodMemberCreators(zodTokens.transformer)
 });
 
 const createZodEffect = callExpressionCreatorWithTarget(
@@ -270,7 +274,7 @@ const createZodEffect = callExpressionCreatorWithTarget(
   zodTokens.effect
 );
 export const effect = Object.assign(createZodEffect, {
-  t: buildSharedZodMemberCreators(zodTokens.effect)
+  of: buildSharedZodMemberCreators(zodTokens.effect)
 });
 
 const createZodPipeline = callExpressionCreatorWithTarget(
@@ -279,7 +283,7 @@ const createZodPipeline = callExpressionCreatorWithTarget(
 );
 
 export const pipeline = Object.assign(createZodPipeline, {
-  t: buildSharedZodMemberCreators(zodTokens.pipeline)
+  of: buildSharedZodMemberCreators(zodTokens.pipeline)
 });
 
 const createZodPreprocess = callExpressionCreatorWithTarget(
@@ -287,7 +291,7 @@ const createZodPreprocess = callExpressionCreatorWithTarget(
   zodTokens.preprocess
 );
 export const preprocess = Object.assign(createZodPreprocess, {
-  t: buildSharedZodMemberCreators(zodTokens.preprocess)
+  of: buildSharedZodMemberCreators(zodTokens.preprocess)
 });
 
 const createZodSymbol = callExpressionCreatorWithTarget(
@@ -295,7 +299,7 @@ const createZodSymbol = callExpressionCreatorWithTarget(
   zodTokens.symbol
 );
 export const symbol = Object.assign(createZodSymbol, {
-  t: buildSharedZodMemberCreators(zodTokens.symbol)
+  of: buildSharedZodMemberCreators(zodTokens.symbol)
 });
 
 const createZodStrictObject = callExpressionCreatorWithTarget(
@@ -303,5 +307,5 @@ const createZodStrictObject = callExpressionCreatorWithTarget(
   zodTokens.strictObject
 );
 export const strictObject = Object.assign(createZodStrictObject, {
-  t: buildSharedZodMemberCreators(zodTokens.strictObject)
+  of: buildSharedZodMemberCreators(zodTokens.strictObject)
 });

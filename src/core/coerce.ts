@@ -20,5 +20,5 @@ const createZodCoerce = propertyAccessExpressionCreatorWithTarget(
 );
 
 export const coerce = Object.assign(createZodCoerce, {
-  t: coerceMemberCreators
+  of: coerceMemberCreators
 });

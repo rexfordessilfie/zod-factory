@@ -46,4 +46,4 @@ export function buildSharedZodMemberCreators<
   } as const satisfies Partial<Record<keyof typeof zodSharedMembers, any>>;
 }
 
-export const sharedMembers = buildSharedZodMemberCreators();
+export const of = buildSharedZodMemberCreators();

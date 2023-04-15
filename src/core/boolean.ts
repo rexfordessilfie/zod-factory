@@ -11,5 +11,5 @@ const createZodBoolean = callExpressionCreatorWithTarget(
 );
 
 export const boolean = Object.assign(createZodBoolean, {
-  t: buildSharedZodMemberCreators(zodTokens.boolean)
+  of: buildSharedZodMemberCreators(zodTokens.boolean)
 });
