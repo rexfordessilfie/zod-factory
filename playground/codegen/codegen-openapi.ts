@@ -1,12 +1,12 @@
 import { OpenAPIV3 } from "openapi-types";
 import ts from "typescript";
 import {
-  createSchemaExport,
-  createZodImport,
-  writeStatementsToFile,
+  schemaExport,
+  zodImport,
+  printStatementsToFile,
   zfs,
-  zodSharedMemberCreators,
-  zodTokens,
+  sharedMembers,
+  zodTokens
 } from "../../dist";
 import { parseArguments } from "./helpers";
 
@@ -231,7 +231,7 @@ const visitAllOf = (schema: OpenAPIV3.SchemaObject) => {
   const [first, ...rest] = expressions.filter((item) => !!item);
 
   const expression = rest.reduce((acc, curr) => {
-    return zodSharedMemberCreators.and(acc, curr);
+    return sharedMembers.and(acc, curr);
   }, first);
 
   return expression;
@@ -332,12 +332,12 @@ for (const schemaDestination of schemaDestinations) {
       const statements = statementsPerFile[fileName];
 
       if (statements.length === 0) {
-        statements.push(createZodImport());
+        statements.push(zodImport());
       }
 
       if (schemaExpression) {
         statements.push(
-          createSchemaExport(schemaExpressionName, schemaExpression)
+          schemaExport(schemaExpressionName, schemaExpression)
         );
 
         schemaExpressionsRegistry.set(schemaExpressionName, schemaExpression);
@@ -355,7 +355,7 @@ for (const schemaDestination of schemaDestinations) {
 
 Object.entries(statementsPerFile).forEach(([fileName, statements]) => {
   // write the schema to the generated file
-  writeStatementsToFile(statements, {
+  printStatementsToFile(statements, {
     header: "// generated file. do not edit.",
     filename: `${fileName}.generated.ts`,
     directory: "./generated",

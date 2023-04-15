@@ -21,35 +21,31 @@ export const printNode = (
   return nodeText;
 };
 
-type WriteStatementsToFileOptions = {
+type PrintStatementsOptions = {
   header?: string;
+  format?: boolean;
+};
+
+type PrintStatementsToFileOptions = PrintStatementsOptions & {
   filename: string;
   directory: string;
-  format?: boolean;
 };
 
 const defaultOptions = {
   filename: "generated.ts",
   directory: "./",
-  format: true,
-} as const satisfies WriteStatementsToFileOptions;
+  format: true
+} as const satisfies PrintStatementsToFileOptions;
 
-export const writeStatementsToFile = (
+export const printStatements = (
   statements: ts.Statement[],
-  options: WriteStatementsToFileOptions = defaultOptions
+  options: PrintStatementsOptions = {},
+  sourceFile = defaultSourceFile
 ) => {
-  const { filename, format, directory, header } = {
+  const { format, header } = {
     ...defaultOptions,
-    ...options,
+    ...options
   };
-
-  const sourceFile = ts.createSourceFile(
-    filename,
-    "",
-    ts.ScriptTarget.Latest,
-    false,
-    ts.ScriptKind.TS
-  );
 
   const fileContents = statements.map((statement) =>
     printNode(statement, sourceFile)
@@ -60,9 +56,39 @@ export const writeStatementsToFile = (
   }
 
   const result = fileContents.join("\n\n");
+
   const formatted = format
     ? prettier.format(result, { parser: "typescript" })
     : result;
+
+  return formatted;
+};
+
+export const printStatementsToFile = (
+  statements: ts.Statement[],
+  options: PrintStatementsToFileOptions = defaultOptions
+) => {
+  const { filename, format, directory, header } = {
+    ...defaultOptions,
+    ...options
+  };
+
+  const sourceFile = ts.createSourceFile(
+    filename,
+    "",
+    ts.ScriptTarget.Latest,
+    false,
+    ts.ScriptKind.TS
+  );
+
+  const formatted = printStatements(
+    statements,
+    {
+      format: format,
+      header: header
+    },
+    sourceFile
+  );
 
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory);

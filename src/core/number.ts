@@ -7,7 +7,7 @@ import {
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
-export const numberMemberCreators = {
+const numberMemberCreators = {
   min: callExpressionCreatorWithFactoryType(zodTokens.min, zodTokens.number),
   max: callExpressionCreatorWithFactoryType(zodTokens.max, zodTokens.number),
   int: callExpressionCreatorWithFactoryType(zodTokens.int, zodTokens.number),
@@ -37,12 +37,12 @@ export const numberMemberCreators = {
   )
 } as const satisfies Partial<Record<keyof typeof zodNumberMembers, any>>;
 
-export const createZodNumber = callExpressionCreatorWithTarget(
-  zodIdentifier,
+const createZodNumber = callExpressionCreatorWithTarget(
+  zodIdentifier(),
   zodTokens.number
 );
 
-export const _number = Object.assign(createZodNumber, {
+export const number = Object.assign(createZodNumber, {
   t: Object.assign(
     numberMemberCreators,
     buildSharedZodMemberCreators(zodTokens.number)

@@ -1,9 +1,9 @@
 import ts from "typescript";
 import {
   zfs,
-  createSchemaExport,
-  createZodImport,
-  writeStatementsToFile,
+  schemaExport,
+  zodImport,
+  printStatementsToFile,
 } from "../../dist";
 import { parseArguments } from "./helpers";
 
@@ -166,10 +166,10 @@ for (const schemaDestination of schemaDestinations) {
     const statements = statementsPerFile[fileName];
 
     if (statements.length === 0) {
-      statements.push(createZodImport());
+      statements.push(zodImport());
     }
 
-    statements.push(createSchemaExport(schemaExpressionName, schemaExpression));
+    statements.push(schemaExport(schemaExpressionName, schemaExpression));
 
     schemaExpressions.set(schemaExpressionName, schemaExpression);
   }
@@ -177,7 +177,7 @@ for (const schemaDestination of schemaDestinations) {
 
 Object.entries(statementsPerFile).forEach(([fileName, statements]) => {
   // write the schema to the generated file
-  writeStatementsToFile(statements, {
+  printStatementsToFile(statements, {
     header: "// generated file. do not edit.",
     filename: `${fileName}.generated.ts`,
     directory: "./generated",
