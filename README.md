@@ -240,7 +240,7 @@ export const Person = z.object({
 ```
 
 # Motivation
-The Typescript Compiler API is very powerful, and heavily featured to handle a variety of use cases, but it can also be verbose, complex, difficult to extend, and very dissimilar from `zod`'s API. `zod-factory` aims to reduce this complexity by introducing abstractions on top of the TS Compiler API to make zod code generation simple, scriptable, extensible.
+The Typescript Compiler API is very powerful, and heavily featured to handle a variety of use cases, but it can also be verbose, complex, difficult to extend, "type-unsafe" and very dissimilar from `zod`'s API. `zod-factory` aims to reduce this complexity by introducing abstractions on top of the TS Compiler API to make zod code generation simple, more type-safe, scriptable, and extensible.
 
 # Acknowledgements
 This library was birthed from an independent study course project I am undertaking with my advisor, professor Garret Morris at the University of Iowa.
