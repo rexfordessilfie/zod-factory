@@ -9,6 +9,7 @@ import {
   zodTokens
 } from "../../dist";
 import { parseArguments } from "./helpers";
+import { ZodToken } from "../../dist/utils";
 
 class MissingRefError extends Error {
   isMissingRefError = true;
@@ -19,10 +20,8 @@ class MissingRefError extends Error {
 
 const sharedTokens = {
   default: "catch",
-  description: "describe",
-} satisfies Partial<
-  Record<keyof OpenAPIV3.SchemaObject, keyof typeof zodTokens>
->;
+  description: "describe"
+} satisfies Partial<Record<keyof OpenAPIV3.SchemaObject, ZodToken>>;
 
 const stringFormats = {
   date: "date",
@@ -34,8 +33,8 @@ const stringFormats = {
   uuid: "uuid",
   cuid: "cuid",
   cuid2: "cuid2",
-  ulid: "ulid",
-} satisfies Partial<Record<string, keyof typeof zodTokens>>;
+  ulid: "ulid"
+} satisfies Partial<Record<string, ZodToken>>;
 
 const visitRef = (ref: string) => {
   const name = ref.replace("#/components/schemas/", "");
@@ -211,7 +210,7 @@ const visitOneOf = (schema: OpenAPIV3.SchemaObject) => {
   if (schema.oneOf)
     params.push([
       zodTokens.union,
-      schema.oneOf.map((item) => convertOpenApiSchemaObjectToZod(item)),
+      schema.oneOf.map((item) => convertOpenApiSchemaObjectToZod(item))
     ]);
 
   extendSharedParams(schema, params);
@@ -336,9 +335,7 @@ for (const schemaDestination of schemaDestinations) {
       }
 
       if (schemaExpression) {
-        statements.push(
-          schemaExport(schemaExpressionName, schemaExpression)
-        );
+        statements.push(schemaExport(schemaExpressionName, schemaExpression));
 
         schemaExpressionsRegistry.set(schemaExpressionName, schemaExpression);
       }
@@ -358,6 +355,6 @@ Object.entries(statementsPerFile).forEach(([fileName, statements]) => {
   printStatementsToFile(statements, {
     header: "// generated file. do not edit.",
     filename: `${fileName}.generated.ts`,
-    directory: "./generated",
+    directory: "./generated"
   });
 });

@@ -182,7 +182,7 @@ $ cd playground
 $ ts-node "./codegen/codegen-openapi.ts" -d "sources" "openapi-schema:.*" 
 ```
 
-For OpenApi schemas, references are resolved by replacing them with the name of the referenced schema. For example:
+For OpenApi schemas, references are resolved by replacing them with the name of the referenced schema (notice the `"favoriteEmoji"` property below). 
 
 **Example**
 ```json

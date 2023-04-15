@@ -1,14 +1,12 @@
 import {
   zodTokens,
   zodSharedMembers,
-  ValueOf,
   callExpressionCreator,
-  callExpressionCreatorWithFactoryType
+  callExpressionCreatorWithFactoryType,
+  ZodToken
 } from "../utils";
 
-export function buildSharedZodMemberCreators<
-  T extends ValueOf<typeof zodTokens>
->(type?: T) {
+export function buildSharedZodMemberCreators<T extends ZodToken>(type?: T) {
   return {
     // Type changing methods
     promise: callExpressionCreator(zodTokens.promise),
