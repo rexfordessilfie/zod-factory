@@ -23,7 +23,7 @@ const setMemberCreators = {
 } as const satisfies Partial<Record<keyof typeof zodSetMembers, any>>;
 
 const set_ = Object.assign(createZodSet, {
-  t: Object.assign(
+  of: Object.assign(
     setMemberCreators,
     buildSharedZodMemberCreators(zodTokens.set)
   )

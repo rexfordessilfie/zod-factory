@@ -5,7 +5,7 @@ import ts from "typescript";
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
 export type FlatTypeMembers = KeysOfUnion<
-  (typeof core)[keyof typeof core]["t"]
+  (typeof core)[keyof typeof core]["of"]
 >;
 
 export type DirectMembers = keyof typeof core;

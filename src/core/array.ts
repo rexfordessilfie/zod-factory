@@ -28,7 +28,7 @@ const createZodArray = callExpressionCreatorWithTarget(
 );
 
 export const array = Object.assign(createZodArray, {
-  t: Object.assign(
+  of: Object.assign(
     arrayMemberCreators,
     buildSharedZodMemberCreators(zodTokens.array)
   )

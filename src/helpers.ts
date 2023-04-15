@@ -1,7 +1,7 @@
 import ts from "typescript";
 import { zodTokens } from "./utils";
 import { ZfMembers, LazyParams, LazyResult } from "./types";
-import { sharedMembers } from "./core/shared";
+import { of } from "./core/shared";
 import * as core from "./core/external";
 
 export function zfs<T extends ZfMembers>(params: LazyParams<T>) {
@@ -22,10 +22,8 @@ export function zfs<T extends ZfMembers>(params: LazyParams<T>) {
 
     const typeMethodKey = `${acc._zfType}` as const;
 
-    let methods: any;
-
     // If we don't have sub methods defined for this, fall back to the shared methods
-    methods = core[typeMethodKey]?.t || sharedMembers;
+    const methods = core[typeMethodKey]?.of || of;
 
     const creator = methods[currMethod as keyof typeof methods];
 
@@ -67,5 +65,5 @@ export function zfl() {
       ...acc,
       [name]: addMember(name, params)
     };
-  }, {} as Record<(typeof zodDirectKeys)[number], ReturnType<typeof addMember>>);
+  }, {} as Record<keyof typeof core, ReturnType<typeof addMember>>);
 }

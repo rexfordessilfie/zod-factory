@@ -43,7 +43,7 @@ const createZodNumber = callExpressionCreatorWithTarget(
 );
 
 export const number = Object.assign(createZodNumber, {
-  t: Object.assign(
+  of: Object.assign(
     numberMemberCreators,
     buildSharedZodMemberCreators(zodTokens.number)
   )

@@ -4,9 +4,9 @@ An abstraction of the Typescript Compiler API factory for generating zod validat
 # Installation
 You can install `zod-factory` with NPM, Yarn, pnpm or other package managers, for example:
 ```bash
-npm install zod-factory     # NPM
-pnpm install zod-factory    # PNPM
-yarn add zod-factory        # Yarn
+npm install zod-factory     # npm
+yarn add zod-factory        # yarn
+pnpm install zod-factory    # pnpm
 ```
 
 # Usage
@@ -23,8 +23,8 @@ const result = zf.printStatements([
     "Person",
     zf.object({
       name: zf.string({ required_error: "Name is required" }),
-      age: zf.number.t.nonnegative(
-        zf.number({ required_error: "Age is required" })
+      age: zf.number.of.nonnegative(
+        zf.number.of.int(zf.number({ required_error: "Age is required" }))
       )
     })
   ),
@@ -64,17 +64,17 @@ import { z } from "zod";
 
 export const Person = z.object({
   name: z.string({ required_error: "Name is required" }),
-  age: z.number({ required_error: "Age is required" }).nonnegative(),
+  age: z.number({ required_error: "Age is required" }).int().nonnegative()
 });
 
 export const Car = z.object({
   type: z.enum(["SUV", "Sedan", "Minivan"]),
-  color: z.string().optional().default("black"),
+  color: z.string().optional().default("black")
 });
 
 export const Book = z.object({
   title: z.string().max(40),
-  author: z.string({ required_error: "Author is required" }),
+  author: z.string({ required_error: "Author is required" })
 });
 ```
 
@@ -105,7 +105,7 @@ $ ts-node "./codegen/codegen.ts" -d "sources" "with-zf:.*" "with-zfl:.*" "with-z
 ## `codegen-custom.ts`
 This generates zod validators from a "custom-format" I came up with for defining validation rules. This format is a POC for code generation from other validation specifications.
 
-To run `codegen.ts` script, run the following, pointing it to the `sources` directory with the files containing custom-format expressions:
+To use this script, run the following command with the `sources` directory containing custom-format definitions:
 ```bash
 $ cd playground
 $ ts-node "./codegen/codegen-custom.ts" -d "sources" "custom-schema:.*"
@@ -176,8 +176,7 @@ export const person = z.object({
 This script generates zod schemas from OpenAPI schema components. Similar to the above, this script
 takes the `filename:schemaNameRegex` arguments, and generates zod schemas from the schema AST node definitions in the file that match the regex.
 
-Run the script as follows, pointing it to the `sources` directory with the files containing custom-format expressions:
-
+Run the script as follows, point it to the `sources` directory with the `openapi-schema.json` file.
 ```bash
 $ cd playground
 $ ts-node "./codegen/codegen-openapi.ts" -d "sources" "openapi-schema:.*" 
@@ -240,7 +239,9 @@ export const Person = z.object({
 ```
 
 # Motivation
-The Typescript Compiler API is very powerful, and heavily featured to handle a variety of use cases, but it can also be verbose, complex, difficult to extend, "type-unsafe" and very dissimilar from `zod`'s API. `zod-factory` aims to reduce this complexity by introducing abstractions on top of the TS Compiler API to make zod code generation simple, more type-safe, scriptable, and extensible.
+The Typescript Compiler API is very powerful, and heavily featured to handle a variety of use cases, but it can also be verbose, complex, difficult to extend, "type-unsafe" and very dissimilar from `zod`'s API. 
+
+`zod-factory` aims to reduce this complexity by introducing abstractions on top of the TS Compiler API to make zod code generation simple, more type-safe, scriptable, and extensible.
 
 # Acknowledgements
 This library was birthed from an independent study course project I am undertaking with my advisor, professor Garret Morris at the University of Iowa.

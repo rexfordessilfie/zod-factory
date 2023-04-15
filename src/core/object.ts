@@ -32,7 +32,7 @@ const createZodObject = callExpressionCreatorWithTarget(
 );
 
 export const object = Object.assign(createZodObject, {
-  t: Object.assign(
+  of: Object.assign(
     objectMemberCreators,
     buildSharedZodMemberCreators(zodTokens.object)
   )

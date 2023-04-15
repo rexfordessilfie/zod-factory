@@ -5,7 +5,7 @@ import {
   zodImport,
   printStatementsToFile,
   zfs,
-  sharedMembers,
+  zf,
   zodTokens
 } from "../../dist";
 import { parseArguments } from "./helpers";
@@ -231,7 +231,7 @@ const visitAllOf = (schema: OpenAPIV3.SchemaObject) => {
   const [first, ...rest] = expressions.filter((item) => !!item);
 
   const expression = rest.reduce((acc, curr) => {
-    return sharedMembers.and(acc, curr);
+    return zf.of.and(acc, curr);
   }, first);
 
   return expression;

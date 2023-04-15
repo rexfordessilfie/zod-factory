@@ -49,7 +49,7 @@ const createZodString = callExpressionCreatorWithTarget(
 );
 
 const string_ = Object.assign(createZodString, {
-  t: Object.assign(
+  of: Object.assign(
     stringMemberCreators,
     buildSharedZodMemberCreators(zodTokens.string)
   )
