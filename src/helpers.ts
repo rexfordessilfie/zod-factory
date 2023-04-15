@@ -1,14 +1,14 @@
 import ts from "typescript";
+import { zodTokens } from "./utils";
+import { ZfMembers, LazyParams, LazyResult } from "./types";
 import { sharedMembers } from "./core/shared";
-import { AllLazyMembers, LazyParams } from "./types";
-import { OnlyMethods } from "./utils";
 import * as core from "./core/external";
 
-export function zfs<T extends AllLazyMembers>(params: LazyParams<T>) {
+export function zfs<T extends ZfMembers>(params: LazyParams<T>) {
   const [first, ...rest] = params || [];
   const [_initialMember, ...initialMemberArgs] = first || [];
 
-  let initialMember = _initialMember as keyof OnlyMethods<typeof core>;
+  let initialMember = _initialMember as keyof typeof core;
   const creator = core[initialMember];
 
   if (typeof creator !== "function") {
@@ -36,7 +36,36 @@ export function zfs<T extends AllLazyMembers>(params: LazyParams<T>) {
     }
 
     //@ts-ignore
-    const result = creator(acc, ...(currArgs || []));
-    return result;
+    return creator(acc, ...(currArgs || []));
   }, initialExpression as ts.Expression & { _zfType: keyof typeof core });
+}
+
+function addMember<T extends ZfMembers>(token: T, soFar: any[]) {
+  const zodTokenKeys = Object.keys(zodTokens) as ZfMembers[];
+
+  return (...args: any[]) => {
+    soFar.push([token, ...args]);
+
+    return zodTokenKeys.reduce(
+      (acc, curr) => {
+        return {
+          ...acc,
+          [curr]: addMember(curr, soFar)
+        };
+      },
+      { create: () => zfs(soFar) } as LazyResult
+    );
+  };
+}
+
+export function zfl() {
+  const params: any[] = [];
+
+  const zodDirectKeys = Object.keys(core) as (keyof typeof core)[];
+  return zodDirectKeys.reduce((acc, name) => {
+    return {
+      ...acc,
+      [name]: addMember(name, params)
+    };
+  }, {} as Record<(typeof zodDirectKeys)[number], ReturnType<typeof addMember>>);
 }
