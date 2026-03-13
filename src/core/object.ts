@@ -3,7 +3,8 @@ import {
   zodObjectMembers,
   callExpressionCreatorWithTarget,
   zodIdentifier,
-  callExpressionCreatorWithFactoryType
+  callExpressionCreatorWithFactoryType,
+  createEnrichedFactory
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
@@ -23,7 +24,18 @@ const objectMemberCreators = {
   nonstrict: callExpressionCreatorWithFactoryType(
     zodTokens.nonstrict,
     zodTokens.object
-  )
+  ),
+  passthrough: callExpressionCreatorWithFactoryType(zodTokens.passthrough, zodTokens.object),
+  strip: callExpressionCreatorWithFactoryType(zodTokens.strip, zodTokens.object),
+  keyof: callExpressionCreatorWithFactoryType(zodTokens.keyof, zodTokens.object),
+  required: callExpressionCreatorWithFactoryType(zodTokens.required, zodTokens.object),
+  pick: callExpressionCreatorWithFactoryType(zodTokens.pick, zodTokens.object),
+  omit: callExpressionCreatorWithFactoryType(zodTokens.omit, zodTokens.object),
+  extend: callExpressionCreatorWithFactoryType(zodTokens.extend, zodTokens.object),
+  augment: callExpressionCreatorWithFactoryType(zodTokens.augment, zodTokens.object),
+  merge: callExpressionCreatorWithFactoryType(zodTokens.merge, zodTokens.object),
+  catchall: callExpressionCreatorWithFactoryType(zodTokens.catchall, zodTokens.object),
+  setKey: callExpressionCreatorWithFactoryType(zodTokens.setKey, zodTokens.object)
 } as const satisfies Partial<Record<keyof typeof zodObjectMembers, any>>;
 
 const createZodObject = callExpressionCreatorWithTarget(
@@ -31,9 +43,12 @@ const createZodObject = callExpressionCreatorWithTarget(
   zodTokens.object
 );
 
-export const object = Object.assign(createZodObject, {
-  of: Object.assign(
-    objectMemberCreators,
-    buildSharedZodMemberCreators(zodTokens.object)
-  )
-});
+const allObjectMembers = Object.assign(
+  objectMemberCreators,
+  buildSharedZodMemberCreators(zodTokens.object)
+);
+
+export const object = Object.assign(
+  createEnrichedFactory(createZodObject, allObjectMembers),
+  { of: allObjectMembers }
+);

@@ -4,7 +4,8 @@ import {
   zodIdentifier,
   callExpressionCreatorWithTarget,
   callExpressionCreatorWithFactoryType,
-  callExpressionCreatorWithPreviousType
+  callExpressionCreatorWithPreviousType,
+  createEnrichedFactory
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
@@ -27,9 +28,12 @@ const createZodArray = callExpressionCreatorWithTarget(
   zodTokens.array
 );
 
-export const array = Object.assign(createZodArray, {
-  of: Object.assign(
-    arrayMemberCreators,
-    buildSharedZodMemberCreators(zodTokens.array)
-  )
-});
+const allArrayMembers = Object.assign(
+  arrayMemberCreators,
+  buildSharedZodMemberCreators(zodTokens.array)
+);
+
+export const array = Object.assign(
+  createEnrichedFactory(createZodArray, allArrayMembers),
+  { of: allArrayMembers }
+);

@@ -178,3 +178,27 @@ export const callExpressionCreatorWithPreviousType =
     const expression = createPropertyAccessCall(target, name, args);
     return extendExpressionWithFactoryType(expression, target._zfType);
   };
+
+export type MemberCreators = Record<string, (target: any, ...args: any[]) => any>;
+
+export function enrichExpression<E extends ts.Expression & { _zfType: any }>(
+  expression: E,
+  memberCreators: MemberCreators
+): E {
+  for (const [key, creator] of Object.entries(memberCreators)) {
+    (expression as any)[key] = (...args: any[]) => {
+      const result = creator(expression, ...args);
+      return enrichExpression(result, memberCreators);
+    };
+  }
+  return expression;
+}
+
+export function createEnrichedFactory<
+  T extends (...args: any[]) => ts.Expression & { _zfType: any }
+>(factoryFn: T, memberCreators: MemberCreators) {
+  return ((...args: any[]) => {
+    const expression = factoryFn(...args);
+    return enrichExpression(expression, memberCreators);
+  }) as T;
+}
