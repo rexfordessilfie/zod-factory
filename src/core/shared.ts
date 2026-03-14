@@ -6,6 +6,17 @@ import {
   ZodToken
 } from "../utils";
 
+/**
+ * Builds the set of member creators shared across all Zod types.
+ *
+ * Includes type-changing methods (`.array()`, `.transform()`, `.pipe()`, etc.)
+ * whose `_zfType` becomes the method name, and type-preserving methods
+ * (`.optional()`, `.nullable()`, `.describe()`, etc.) whose `_zfType` stays
+ * as the provided `type` parameter.
+ *
+ * @param type - The Zod type token to preserve for type-preserving methods.
+ *   If omitted, the method name is used as the fallback type.
+ */
 export function buildSharedZodMemberCreators<T extends ZodToken>(type?: T) {
   return {
     // Type changing methods
@@ -44,4 +55,5 @@ export function buildSharedZodMemberCreators<T extends ZodToken>(type?: T) {
   } as const satisfies Partial<Record<keyof typeof zodSharedMembers, any>>;
 }
 
+/** Default shared member creators without a specific type context. */
 export const of = buildSharedZodMemberCreators();

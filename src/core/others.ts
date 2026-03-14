@@ -7,6 +7,12 @@ import {
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
+/**
+ * Creates a Zod type factory for types that only have shared members (no type-specific methods).
+ * Returns a callable factory with fluent API support and a `.of` namespace for the explicit API.
+ *
+ * @param token - The Zod type token (e.g. `zodTokens.union`, `zodTokens.literal`).
+ */
 function createSharedOnlyType(token: ZodToken) {
   const factory = callExpressionCreatorWithTarget(zodIdentifier(), token);
   const members = buildSharedZodMemberCreators(token);
