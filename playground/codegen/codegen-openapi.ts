@@ -19,13 +19,13 @@ class MissingRefError extends Error {
 }
 
 const sharedTokens = {
-  default: "catch",
+  default: "default",
   description: "describe"
 } satisfies Partial<Record<keyof OpenAPIV3.SchemaObject, ZodToken>>;
 
 const stringFormats = {
-  date: "date",
-  "date-time": "date",
+  date: "datetime",
+  "date-time": "datetime",
   email: "email",
   ipv4: "ip",
   ipv6: "ip",
@@ -33,7 +33,8 @@ const stringFormats = {
   uuid: "uuid",
   cuid: "cuid",
   cuid2: "cuid2",
-  ulid: "ulid"
+  ulid: "ulid",
+  emoji: "emoji"
 } satisfies Partial<Record<string, ZodToken>>;
 
 const visitRef = (ref: string) => {
@@ -84,6 +85,23 @@ const visitObject = (schema: OpenAPIV3.SchemaObject) => {
   const params: any = [];
   params.push([zodTokens.object, propertyParams]);
 
+  if (schema.additionalProperties !== undefined) {
+    if (schema.additionalProperties === true) {
+      params.push([zodTokens.passthrough]);
+    } else if (schema.additionalProperties === false) {
+      params.push([zodTokens.strict]);
+    } else if (typeof schema.additionalProperties === "object") {
+      const additionalPropsExpression = convertOpenApiSchemaObjectToZod(
+        schema.additionalProperties
+      );
+      if (additionalPropsExpression) {
+        params.push([zodTokens.catchall, additionalPropsExpression]);
+      }
+    }
+  }
+
+  extendSharedParams(schema, params);
+
   return zfs(params);
 };
 
@@ -92,18 +110,25 @@ const visitArray = (schema: OpenAPIV3.ArraySchemaObject) => {
   const params: any = [];
   params.push([zodTokens.array, convertOpenApiSchemaObjectToZod(itemsSchema)]);
 
+  if (schema.minItems) {
+    params.push([zodTokens.min, schema.minItems]);
+  }
+
   if (schema.maxItems) {
     params.push([zodTokens.max, schema.maxItems]);
   }
 
-  if (schema.minItems) {
-    params.push([zodTokens.min, schema.minItems]);
-  }
+  extendSharedParams(schema, params);
 
   return zfs(params);
 };
 
 const extendSharedParams = (schema: OpenAPIV3.SchemaObject, params: any[]) => {
+  // Handle nullable
+  if (schema.nullable) {
+    params.push([zodTokens.nullable]);
+  }
+
   // Add the chained shared methods
   Object.keys(sharedTokens).forEach((key) => {
     const token = sharedTokens[key as keyof typeof sharedTokens];
@@ -192,6 +217,10 @@ const visitNumber = (schema: OpenAPIV3.SchemaObject) => {
     }
   }
 
+  if (schema.multipleOf) {
+    params.push([zodTokens.multipleOf, schema.multipleOf]);
+  }
+
   extendSharedParams(schema, params);
   return zfs(params);
 };
@@ -204,16 +233,18 @@ const visitBoolean = (schema: OpenAPIV3.SchemaObject) => {
   return zfs(params);
 };
 
-const visitOneOf = (schema: OpenAPIV3.SchemaObject) => {
+const visitUnion = (
+  schemas: (OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject)[],
+  parentSchema: OpenAPIV3.SchemaObject
+) => {
   const params: any = [];
 
-  if (schema.oneOf)
-    params.push([
-      zodTokens.union,
-      schema.oneOf.map((item) => convertOpenApiSchemaObjectToZod(item))
-    ]);
+  params.push([
+    zodTokens.union,
+    schemas.map((item) => convertOpenApiSchemaObjectToZod(item))
+  ]);
 
-  extendSharedParams(schema, params);
+  extendSharedParams(parentSchema, params);
   return zfs(params);
 };
 
@@ -248,7 +279,11 @@ const convertOpenApiSchemaObjectToZod = (
   }
 
   if (schema.oneOf) {
-    return visitOneOf(schema);
+    return visitUnion(schema.oneOf, schema);
+  }
+
+  if (schema.anyOf) {
+    return visitUnion(schema.anyOf, schema);
   }
 
   if (schema.allOf) {
