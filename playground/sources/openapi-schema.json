@@ -326,6 +326,80 @@
             "description": "The description of message"
           }
         }
+      },
+      "PaginatedList": {
+        "type": "object",
+        "description": "A paginated list of items",
+        "required": ["items", "total", "page"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pet"
+            },
+            "description": "The list of items",
+            "default": []
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of items",
+            "multipleOf": 1
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number",
+            "minimum": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Number of items per page",
+            "default": 20,
+            "multipleOf": 5
+          }
+        }
+      },
+      "NullableTag": {
+        "type": "string",
+        "nullable": true,
+        "description": "An optional tag that can be null"
+      },
+      "PetOrError": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/Pet"
+          },
+          {
+            "$ref": "#/components/schemas/Error"
+          }
+        ],
+        "description": "Either a pet or an error"
+      },
+      "Metadata": {
+        "type": "object",
+        "description": "Extensible metadata object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "StrictConfig": {
+        "type": "object",
+        "description": "A config object that does not allow extra properties",
+        "required": ["key", "value"],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     }
   }
