@@ -3,7 +3,8 @@ import {
   zodSetMembers,
   zodIdentifier,
   callExpressionCreatorWithTarget,
-  callExpressionCreatorWithFactoryType
+  callExpressionCreatorWithFactoryType,
+  createEnrichedFactory
 } from "../utils";
 import { buildSharedZodMemberCreators } from "./shared";
 
@@ -22,11 +23,14 @@ const setMemberCreators = {
   )
 } as const satisfies Partial<Record<keyof typeof zodSetMembers, any>>;
 
-const set_ = Object.assign(createZodSet, {
-  of: Object.assign(
-    setMemberCreators,
-    buildSharedZodMemberCreators(zodTokens.set)
-  )
-});
+const allSetMembers = Object.assign(
+  setMemberCreators,
+  buildSharedZodMemberCreators(zodTokens.set)
+);
+
+const set_ = Object.assign(
+  createEnrichedFactory(createZodSet, allSetMembers),
+  { of: allSetMembers }
+);
 
 export { set_ as set };
